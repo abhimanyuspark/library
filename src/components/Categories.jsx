@@ -28,7 +28,7 @@ const Categories = ({ data }) => {
         setLoading(true);
         try {
           const response = await axios.get(
-            `https://openlibrary.org/subjects/${category}.json?limit=${resultsPerPage}&offset=${offset}`
+            `https://openlibrary.org/search.json?subject=${category}&limit=${resultsPerPage}&offset=${offset}`
           );
           setCategories(response.data);
           setLoading(false);
@@ -44,9 +44,11 @@ const Categories = ({ data }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h3 className="text-primary underline cursor-pointer pl-4">{data.name}</h3>
+      <h3 className="text-primary underline cursor-pointer pl-4">
+        {data.name}
+      </h3>
 
-      {error || categories?.works?.length === 0 ? (
+      {error || categories?.docs?.length === 0 ? (
         <Error />
       ) : (
         <List
@@ -78,9 +80,9 @@ const List = ({ books, onPageChange, page, totalPages, loading }) => {
           Loading...
         </div>
       ) : (
-        <div className="mx-4 overflow-x-auto flex items-center space-x-2 gap-8 scroll snap-mandatory snap-x scroll-smooth scroll-px-2">
-          {books?.works?.map((book, index) => {
-            const image = book?.cover_id;
+        <div className="mx-10 lg:mx-4 overflow-x-auto flex items-center space-x-2 gap-8 scroll snap-mandatory snap-x scroll-smooth scroll-px-2 px-12">
+          {books?.docs?.map((book, index) => {
+            const image = book?.cover_i;
             return <Card key={index} index={index} image={image} book={book} />;
           })}
         </div>

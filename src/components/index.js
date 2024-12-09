@@ -4,6 +4,7 @@ import DropDown from "./DropDown";
 import { validation } from "./validation";
 import Input from "./styles/Input";
 import Button from "./styles/Button";
+import LinkButton from "./styles/LinkButton";
 import ScrollToTop from "./ScrollToTop ";
 import Search from "./Search";
 import Themes from "./Themes";
@@ -18,6 +19,7 @@ export {
   Input,
   Search,
   Button,
+  LinkButton,
   Loading,
   Error,
   DropDown,

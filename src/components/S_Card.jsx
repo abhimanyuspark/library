@@ -1,10 +1,9 @@
 import React from "react";
-import { useNavigate } from "react-router";
-import { Button, Ratings } from "../components";
+import { Link } from "react-router";
+import { LinkButton, Ratings } from "../components";
 
 const S_Card = ({ image, book }) => {
-  const navigate = useNavigate();
-  const rating  = Math.ceil(book?.ratings_average)
+  const rating = Math.ceil(book?.ratings_average);
 
   return (
     <div className="rounded-md bg-slate-50 p-4 flex gap-6 flex-col lg:flex-row lg:items-center">
@@ -23,12 +22,15 @@ const S_Card = ({ image, book }) => {
         ) : (
           <div className="border border-white rounded-md w-full h-full"></div>
         )}
-      </div> 
+      </div>
 
       <div className="flex-1 flex gap-2 flex-col">
-        <h2 className="text-lg font-bold hover:text-primary cursor-pointer">
+        <Link
+          to={`/book/${book?.key.split("/works/")[1]}`}
+          className="text-lg font-bold hover:text-primary cursor-pointer"
+        >
           {book?.title}
-        </h2>
+        </Link>
         {book?.author_name?.length > 0 ? (
           <p className="text-slate-400 text-lg">
             by <span className="text-primary">{book?.author_name[0]}</span>
@@ -38,10 +40,7 @@ const S_Card = ({ image, book }) => {
         )}
         <div className="flex gap-1 items-center">
           {rating ? (
-            <Ratings
-              rating={rating}
-              count={book[`ratings_count_${rating}`]}
-            />
+            <Ratings rating={rating} count={book[`ratings_count_${rating}`]} />
           ) : (
             ""
           )}
@@ -64,10 +63,7 @@ const S_Card = ({ image, book }) => {
       </div>
 
       <div className="w-full lg:w-40">
-        <Button
-          children="ReadOnly"
-          onClick={() => navigate(`/book/${book?.key.split("/works/")[1]}`)}
-        />
+        <LinkButton book={book} />
       </div>
     </div>
   );

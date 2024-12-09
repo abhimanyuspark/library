@@ -2,7 +2,7 @@ import { useParams, useNavigate, Link } from "react-router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Error, Loading } from "../../components";
+import { Error, LinkButton, Loading } from "../../components";
 import { fetchBookDetails } from "../../redux/server/server";
 
 const Book = () => {
@@ -37,18 +37,11 @@ const Book = () => {
 
     Swal.fire({
       position: "top-end",
-      icon: "success",
-      title: "Download Successful",
+      icon: "error",
+      title: "Details are not avilable",
       showConfirmButton: false,
       timer: 1000,
     });
-
-    // Simulated download logic
-    // const downloadUrl = "https://example.com/file.pdf";
-    // const link = document.createElement("a");
-    // link.href = downloadUrl;
-    // link.download = "book-details.pdf";
-    // link.click();
   };
 
   return (
@@ -110,11 +103,7 @@ const Details = ({ book, onDownload }) => {
           {book?.subjects?.[0] || "Fiction"}
         </span>
 
-        <Button
-          children={"Download Now"}
-          onClick={onDownload}
-          className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition duration-300"
-        />
+        <LinkButton book={book} onClick={onDownload} />
       </div>
 
       {/* Details Section */}
@@ -148,12 +137,15 @@ const Details = ({ book, onDownload }) => {
                 d: new Date(book?.created?.value).toLocaleDateString(),
                 name: "Created",
               },
-            ].map((d) => (
-              d.d && <div className="p-4 border border-slate-300 rounded-md flex-1 flex items-center flex-col justify-center">
-                <h4>{d.name}</h4>
-                <p>{d?.d}</p>
-              </div>
-            ))}
+            ].map(
+              (d) =>
+                d.d && (
+                  <div className="p-4 border border-slate-300 rounded-md flex-1 flex items-center flex-col justify-center">
+                    <h4>{d.name}</h4>
+                    <p>{d?.d}</p>
+                  </div>
+                )
+            )}
           </div>
           {/* description */}
           <p className="text-gray-600 leading-relaxed">

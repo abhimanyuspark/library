@@ -1,12 +1,13 @@
 import React from "react";
-import { useNavigate } from "react-router";
-import Button from "./styles/Button";
+import { Link } from "react-router";
+import LinkButton from "./styles/LinkButton";
 
 const Card = ({ book, image }) => {
-  const navigate = useNavigate();
+
   return (
     <div className="snap-always snap-center grid place-items-center gap-2">
-      <div
+      <Link
+        to={`/book/${book?.key.split("/works/")[1]}`}
         className={`${
           image ? "p-0" : "p-2"
         } w-32 h-44 xl:aspect-square rounded-md overflow-hidden bg-gray-200 border border-slate-200`}
@@ -21,12 +22,9 @@ const Card = ({ book, image }) => {
         ) : (
           <div className="border border-white rounded-md w-full h-full"></div>
         )}
-      </div>
+      </Link>
 
-      <Button
-        children="ReadOnly"
-        onClick={() => navigate(`/book/${book?.key.split("/works/")[1]}`)}
-      />
+      <LinkButton book={book}/>
     </div>
   );
 };

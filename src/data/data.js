@@ -12,7 +12,7 @@ const NavContext = [
 ];
 
 const categoriesData = [
-  { id: 1, name: "Popular", category: "popular" },
+  { id: 1, name: "Trending", category: "popular" },
   { id: 2, name: "Classic", category: "classics" },
   { id: 3, name: "Kids", category: "childrens" },
   { id: 4, name: "Thrillers", category: "thrillers" },
