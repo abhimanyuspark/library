@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body{
+    position: relative;
+    overflow-y: auto;
+    /* width: 100dvw; */
+    height: 100dvh;
+}
+
+h1{
+    @apply text-3xl font-bold
+}
+h2{
+    @apply text-2xl font-bold
+}
+h3{
+    @apply text-lg font-bold
+}
+p{
+    @apply text-sm font-medium
+}
+a{
+    @apply text-sm font-semibold
+}
+
+@layer base{
+    :root{
+        --primary-color: #000000;
+        --secoundry-color: #ffffff;
+        --color-text-base: #000000;
+        --color-text-base-hover: #313131;
+        --color-bg-primary: #313131;
+    }
+    /* * {
+        @apply transition-colors duration-300 ease-in-out 
+    } */
+}
+
+.theme-light{
+    --primary-color: #000000;
+    --secoundry-color: #ffffff;
+    --color-text-base-hover: #aaaaaa;
+}
+
+.theme-dark{
+    --primary-color: #cecece;
+    --secoundry-color: #000000;
+    --color-text-base-hover: #aaaaaa;
+}
+
+.theme-green{
+    --primary-color: #03c403;
+    --secoundry-color: #c4fac2;
+    --color-text-base-hover: #00ff00;
+}
+
+.theme-blue{
+    --primary-color: #0000ff;
+    --secoundry-color: #abd3f8;
+    --color-text-base-hover: #0000ff;
+}
+
+.theme-orange{
+    --primary-color: #ff9900;
+    --secoundry-color: #fadfac;
+    --color-text-base-hover: #ff9900;
+}

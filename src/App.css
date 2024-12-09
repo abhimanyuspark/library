@@ -1,0 +1,12 @@
+.scroll{
+    scrollbar-width: none;
+}
+
+.clamp::before{
+    content: attr(data-before);
+    font-size: large;
+}
+
+.transition-width{
+    transition: width 0.3s ease-in-out;
+}
