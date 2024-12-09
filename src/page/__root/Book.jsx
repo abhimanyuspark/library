@@ -131,9 +131,6 @@ const Details = ({ book, onDownload }) => {
                 {new Date(book?.last_modified?.value).toLocaleDateString() ||
                   "No data available"}
               </p>
-              {/* <p>
-                <span className="font-bold">Edition : </span>
-              </p> */}
             </div>
           </div>
           {/* author */}
@@ -152,7 +149,7 @@ const Details = ({ book, onDownload }) => {
                 name: "Created",
               },
             ].map((d) => (
-              <div className="p-4 border border-slate-300 rounded-md flex-1 flex items-center flex-col justify-center">
+              d.d && <div className="p-4 border border-slate-300 rounded-md flex-1 flex items-center flex-col justify-center">
                 <h4>{d.name}</h4>
                 <p>{d?.d}</p>
               </div>
