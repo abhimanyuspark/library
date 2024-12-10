@@ -3,7 +3,7 @@ import "./App.css";
 import Layout from "./layout/Layout";
 import { Suspense } from "react";
 import { Loading, ScrollToTop } from "./components";
-import { About, Book, Contact, Dash, ForgetPassword, Login, NotFound, Search } from "./page";
+import { About, Book, Contact, Dash, ForgetPassword, Login, NotFound, Search, SignUp } from "./page";
 
 function App() {
   return (
@@ -12,6 +12,7 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/*" element={<NotFound />} />
           <Route path="/forget" element={<ForgetPassword />} />
         </Route>

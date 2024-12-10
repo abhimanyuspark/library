@@ -17,6 +17,13 @@ export const validation = (data) => {
       }
     }
 
+    // Check if user name is provided
+    if (data.hasOwnProperty("name")) {
+      if (!data.name.trim()) {
+        errors.name = "username is required";
+      }
+    }
+
     // Check if password is provided and meets length criteria
     if (data.hasOwnProperty("password")) {
       if (!data.password.trim()) {

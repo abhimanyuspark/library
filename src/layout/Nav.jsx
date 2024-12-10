@@ -10,7 +10,7 @@ import { Search } from "../components";
 
 const Nav = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, isLogin } = useSelector((state) => state.auth);
+  const { appUser, isLogin } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const Auth = () => {

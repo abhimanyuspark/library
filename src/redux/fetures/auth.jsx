@@ -1,55 +1,61 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { loginToBoth, signupToBoth } from "../server/server";
 
-// Initialize state from localStorage
-const userFromStorage = JSON.parse(localStorage.getItem("user")) || {};
-const isLogin = Boolean(localStorage.getItem("user"));
+const userFromStorage = JSON.parse(localStorage.getItem("userToken")) || {};
+const isLogin = Boolean(localStorage.getItem("userToken"));
 
 const initialState = {
-  error: null,
+  appUser: userFromStorage,
   loading: false,
-  isLogin: isLogin, // Check if user exists in localStorage
-  user: userFromStorage,
+  error: null,
+  isLogin: isLogin,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // Login Reducer
-    login(state, action) {
-      state.loading = false;
-      state.user = action.payload;
-      state.isLogin = true;
-
-      // Save user to localStorage
-      localStorage.setItem("user", JSON.stringify(action.payload));
-    },
-
-    // Logout Reducer
     logout(state) {
       state.loading = false;
-      state.user = {};
+      state.appUser = null;
       state.isLogin = false;
-
       // Clear user from localStorage
-      localStorage.removeItem("user");
-    },
-
-        // Start Loading Reducer
-    startLoading(state) {
-      state.loading = true;
-      state.error = null;
-    },
-
-    // Error Reducer
-    setError(state, action) {
-      state.loading = false;
-      state.error = action.payload;
-    },
+      localStorage.removeItem("userToken");
+    }
   },
-//   extraReducers: {},
+  extraReducers: (builder) => {
+    builder
+      // Handle applogin
+      .addCase(loginToBoth.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginToBoth.fulfilled, (state, action) => {
+        state.loading = false;
+        state.appUser = action.payload;
+        state.isLogin = true;
+      })
+      .addCase(loginToBoth.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Handle appsignup
+      .addCase(signupToBoth.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(signupToBoth.fulfilled, (state, action) => {
+        state.loading = false;
+        state.appUser = action.payload;
+        state.isLogin = true;
+      })
+      .addCase(signupToBoth.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
 });
 
-export const { login, logout, startLoading, setError } = authSlice.actions;
+export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -2,14 +2,16 @@ import React, { useState } from "react";
 import { Input, validation, Button } from "../../components";
 import { Link, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { loginToBoth } from "../../redux/server/server";
+import { signupToBoth } from "../../redux/server/server";
 
-const Login = () => {
+const SignUp = () => {
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
   });
   const [formError, setFormError] = useState({
+    name: "",
     email: "",
     password: "",
   });
@@ -29,10 +31,11 @@ const Login = () => {
     const isValid = Object.keys(validError).length === 0;
 
     if (isValid) {
-      const response = await dispatch(loginToBoth(formData));
+      const response = await dispatch(signupToBoth(formData));
       if (response?.meta?.requestStatus === "fulfilled") {
-        navigate(-1, { replace: true });
+        navigate("/", { replace: true });
       } else {
+        console.log(response)
         setFormError((p) => ({ ...p, ...response?.payload }));
       }
     } else {
@@ -50,12 +53,22 @@ const Login = () => {
           className="mx-auto h-10 w-auto"
         />
         <h2 className="mt-10 text-center tracking-tight text-gray-900">
-          Sign in to your account
+          Sign up to libray account
         </h2>
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={onSubmit} className="flex flex-col gap-5">
+          <Input
+            label={"UserName"}
+            name={"name"}
+            value={formData.name}
+            onChange={(e) => {
+              handleChange("name", e);
+            }}
+            error={formError.name}
+          />
+
           <Input
             label={"Email"}
             name={"email"}
@@ -82,17 +95,13 @@ const Login = () => {
             error={formError.password}
           />
 
-          <Link to="/forget" className="text-indigo-600 hover:text-indigo-500">
-            Forgot password?
-          </Link>
-
-          <Button loading={loading} children="Sign in" />
+          <Button loading={loading} children="Sign Up" />
         </form>
 
         <p className="mt-10 text-center text-gray-500">
-          Not a user?{" "}
-          <Link to="/signup" className="text-indigo-600 hover:text-indigo-500">
-            Sign Up
+          Already User .{" "}
+          <Link to="/login" className="text-indigo-600 hover:text-indigo-500">
+            Sign In
           </Link>
         </p>
       </div>
@@ -100,4 +109,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
