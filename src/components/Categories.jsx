@@ -9,8 +9,28 @@ const Categories = ({ data }) => {
   const [error, setError] = useState("");
   const [categories, setCategories] = useState({});
   const [page, setPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage());
 
-  const resultsPerPage = 5;
+  // Function to determine items per page based on screen width
+  function getItemsPerPage() {
+    if (window.innerWidth <= 480) {
+      return 1; // Mobile
+    } else if (window.innerWidth <= 768) {
+      return 2; // Tablet (e.g., iPad)
+    } else {
+      return 5; // Desktop
+    }
+  }
+
+  // Update `itemsPerPage` on window resize
+  useEffect(() => {
+    const handleResize = () => setItemsPerPage(getItemsPerPage());
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const resultsPerPage = itemsPerPage;
   const totalPages = Math.ceil(categories.numFound / resultsPerPage);
 
   const onPageChange = (newPage) => {
@@ -40,7 +60,7 @@ const Categories = ({ data }) => {
 
       fetchBooks();
     }
-  }, [data, page]);
+  }, [data, page, resultsPerPage]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -76,11 +96,11 @@ const List = ({ books, onPageChange, page, totalPages, loading }) => {
       </button>
 
       {loading ? (
-        <div className="flex-1 text-center p-24 text-primary font-bold text-lg lg:text-xl">
+        <div className="flex-1 text-center py-24 text-primary font-bold text-lg lg:text-xl">
           Loading...
         </div>
       ) : (
-        <div className="mx-10 lg:mx-4 overflow-x-auto flex items-center space-x-2 gap-8 scroll snap-mandatory snap-x scroll-smooth scroll-px-2 px-12">
+        <div className="mx-2 lg:mx-4 overflow-x-auto flex items-center space-x-2 gap-8 scroll snap-mandatory snap-x scroll-smooth scroll-px-2">
           {books?.docs?.map((book, index) => {
             const image = book?.cover_i;
             return <Card key={index} index={index} image={image} book={book} />;

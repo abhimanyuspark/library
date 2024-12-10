@@ -57,27 +57,33 @@ const LinkButton = ({ book, onClick }) => {
     >
       <span className="hover:flex-1 transition-all">
         {access === "public"
-          ? "ReadOnly"
+          ? "Read"
           : access === "borrowable"
           ? "Borrow"
           : access === "no_ebook" || access === "unclassified"
           ? "Locate"
-          : "DetailsOnly"}
+          : "Details"}
       </span>
+
       {access === "public" || access === "borrowable" ? (
-        <hr className="border border-white h-auto" />
+        <>
+          <hr className="border border-white h-auto" />
+          <span
+            className="transition-all hover:flex-1"
+            onClick={() => {
+              window.open(
+                `https://archive.org/details/${link}/page/n16/mode/2up?ref=ol&_autoReadAloud=show&view=theater`,
+                "_blank"
+              );
+            }}
+          >
+            <MusicalNoteIcon className="text-white size-6" />
+          </span>
+        </>
       ) : (
         ""
       )}
-      {access === "public" || access === "borrowable" ? (
-        <span className="transition-all hover:flex-1" onClick={()=>{
-          window.open(`https://archive.org/details/${link}/page/n16/mode/2up?ref=ol&_autoReadAloud=show&view=theater`, "_blank")
-        }}>
-          <MusicalNoteIcon className="text-white size-6" />
-        </span>
-      ) : (
-        ""
-      )}
+
       {/* <span>
         {access}
         {" , "}
