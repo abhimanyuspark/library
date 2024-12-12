@@ -1,20 +1,29 @@
 import React from "react";
 import { Link } from "react-router";
 import LinkButton from "./styles/LinkButton";
+import { useDecBookObj, useMybookOnLocalstorage } from "../hooks";
 
 const Card = ({ book, image }) => {
+  const obj = useDecBookObj(book)
+  const {
+    title, 
+    key,
+  } = obj
+
+  const onSave = useMybookOnLocalstorage(obj) 
 
   return (
     <div className="snap-always snap-center grid place-items-center gap-2">
       <Link
-        to={`/book/${book?.key.split("/works/")[1]}`}
+        to={`/book/${key}`}
+        onClick={onSave}
         className={`${
           image ? "p-0" : "p-2"
         } w-32 h-44 xl:aspect-square rounded-md overflow-hidden bg-gray-200 border border-slate-200`}
       >
         {image ? (
           <img
-            alt={book?.title}
+            alt={title}
             loading="lazy"
             src={`https://covers.openlibrary.org/b/id/${image}-L.jpg`}
             className="w-full h-full object-cover"
@@ -24,7 +33,7 @@ const Card = ({ book, image }) => {
         )}
       </Link>
 
-      <LinkButton book={book}/>
+      <LinkButton book={obj} />
     </div>
   );
 };

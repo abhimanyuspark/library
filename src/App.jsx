@@ -3,7 +3,7 @@ import "./App.css";
 import Layout from "./layout/Layout";
 import { Suspense } from "react";
 import { Loading, ScrollToTop } from "./components";
-import { About, Book, Contact, Dash, ForgetPassword, Login, NotFound, Search, SignUp } from "./page";
+import { About, Book, Contact, Dash, ForgetPassword, Login, NotFound, Search, SignUp, MyBooks } from "./page";
 
 function App() {
   return (
@@ -23,6 +23,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/book/:id" element={<Book />} />
+          <Route path="/mybooks" element={<MyBooks />} />
         </Route>
       </Routes>
     </Suspense>

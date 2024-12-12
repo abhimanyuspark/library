@@ -9,6 +9,7 @@ const Contact = lazy(()=> import("./__root/Contact"))
 const Book = lazy(()=> import("./__root/Book"))
 const Search = lazy(()=> import("./__root/Search"))
 const ForgetPassword = lazy(()=> import("./__auth/ForgetPassword"))
+const MyBooks = lazy(()=> import("./__root/MyBooks"))
 
 export {
     Dash,
@@ -20,4 +21,5 @@ export {
     Book,
     Search,
     ForgetPassword,
+    MyBooks,
 }

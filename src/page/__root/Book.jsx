@@ -1,48 +1,17 @@
-import { useParams, useNavigate, Link } from "react-router";
+import { useParams, Link } from "react-router";
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
-import { Error, LinkButton, Loading } from "../../components";
+import { Error, LinkButton, Loading, Ratings } from "../../components";
 import { fetchBookDetails } from "../../redux/server/server";
 
 const Book = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const { isLogin } = useSelector((state) => state.auth);
   const { book, loading, error } = useSelector((state) => state.books);
 
   useEffect(() => {
     dispatch(fetchBookDetails(id));
   }, [dispatch, id]);
-
-  const onDownload = () => {
-    if (!isLogin) {
-      Swal.fire({
-        title: "Download File!",
-        text: "Please log in to download this file.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Log in",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate("/login");
-        }
-      });
-      return;
-    }
-
-    Swal.fire({
-      position: "top-end",
-      icon: "error",
-      title: "Details are not avilable",
-      showConfirmButton: false,
-      timer: 1000,
-    });
-  };
 
   return (
     <div className="flex items-center justify-center p-4 sm:px-6 lg:px-8">
@@ -51,27 +20,34 @@ const Book = () => {
       ) : error || !book ? (
         <Error />
       ) : (
-        <Details book={book} onDownload={onDownload} />
+        <Details book={book} />
       )}
     </div>
   );
 };
 
-const Details = ({ book, onDownload }) => {
+const Details = ({ book }) => {
   const image = book?.covers;
+  const useLocalStorage = JSON.parse(localStorage.getItem("userbook")) || {};
+  const { rating, count } = useLocalStorage;
+
   const [sub, setSub] = useState(false);
   const [subPeop, setSubPeop] = useState(false);
   const [places, setPlaces] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
+
   const onSub = () => {
     setSub(!sub);
   };
+
   const onSubPeop = () => {
     setSubPeop(!subPeop);
   };
+
   const onPlaces = () => {
     setPlaces(!places);
   };
+
   const toggleDescription = () => {
     setShowFullDescription(!showFullDescription);
   };
@@ -103,7 +79,7 @@ const Details = ({ book, onDownload }) => {
           {book?.subjects?.[0] || "Fiction"}
         </span>
 
-        <LinkButton book={book} onClick={onDownload} />
+        <LinkButton book={useLocalStorage} />
       </div>
 
       {/* Details Section */}
@@ -122,12 +98,16 @@ const Details = ({ book, onDownload }) => {
               </p>
             </div>
           </div>
+          {/* ratings */}
+          <div>
+            <Ratings rating={rating} count={count} />
+          </div>
           {/* author */}
           <p className="text-gray-700">
             <span className="font-bold">Authors : </span>
             {typeof book?.authors === "string"
               ? book?.authors?.map((author) => author?.name).join(", ")
-              : book?.description?.value || "No data available."}
+              : book?.authors?.value || "No data available."}
           </p>
           {/* publish, created */}
           <div className="flex gap-4 items-center">
@@ -138,9 +118,12 @@ const Details = ({ book, onDownload }) => {
                 name: "Created",
               },
             ].map(
-              (d) =>
+              (d, i) =>
                 d.d && (
-                  <div className="p-4 border border-slate-300 rounded-md flex-1 flex items-center flex-col justify-center">
+                  <div
+                    key={i}
+                    className="p-4 border border-slate-300 rounded-md flex-1 flex items-center flex-col justify-center"
+                  >
                     <h4>{d.name}</h4>
                     <p>{d?.d}</p>
                   </div>

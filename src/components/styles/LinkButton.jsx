@@ -1,16 +1,16 @@
 import { MusicalNoteIcon } from "@heroicons/react/20/solid";
 import React from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import Swal from "sweetalert2";
+import { useMybookOnLocalstorage } from "../../hooks";
 
 const LinkButton = ({ book, onClick }) => {
   const navigate = useNavigate();
-  const access = book?.ebook_access;
-  const link = book?.lending_identifier_s;
-  const isbn = book?.isbn?.[0] || book?.bn || book?.isbn;
-  const oclc = book?.oclc?.[0] || book?.oclc;
+  const { access, link, isbn, oclc, key } = book;
+  const { id } = useParams();
   const { isLogin } = useSelector((state) => state.auth);
+  const onSave = useMybookOnLocalstorage(book)
 
   const onCheck = () => {
     if (access === "public") {
@@ -46,7 +46,35 @@ const LinkButton = ({ book, onClick }) => {
       }
     } else {
       //access =  printdisabled
-      navigate(`/book/${book?.key.split("/works/")[1]}`);
+      if (id) {
+        if (!isLogin) {
+          Swal.fire({
+            title: "Download File!",
+            text: "Please log in to download this file.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Log in",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              navigate("/login");
+            }
+          });
+          return;
+        } else {
+          Swal.fire({
+            position: "top-end",
+            icon: "error",
+            title: "Download is not available",
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        }
+      } else {
+        onSave()
+        navigate(`/book/${key}`);
+      }
     }
   };
 
@@ -83,12 +111,6 @@ const LinkButton = ({ book, onClick }) => {
       ) : (
         ""
       )}
-
-      {/* <span>
-        {access}
-        {" , "}
-        {link}
-      </span> */}
     </a>
   );
 };

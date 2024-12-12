@@ -22,6 +22,7 @@ export const fetchBookDetails = createAsyncThunk("bookDetails", async (id) => {
   return response.data;
 });
 
+// Combined signup for your app and Archive.org
 export const signupToBoth = createAsyncThunk(
   "auth/signupToBoth",
   async (data, { rejectWithValue }) => {
@@ -83,3 +84,8 @@ export const loginToBoth = createAsyncThunk(
     }
   }
 );
+
+export const myBooks = createAsyncThunk("myBooks", async({id, mybook})=>{
+  const response = await axios.patch(`${url}?id=${id}`, mybook)
+  return response.data
+})
