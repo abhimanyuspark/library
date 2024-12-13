@@ -17,6 +17,13 @@ export const validation = (data) => {
       }
     }
 
+    // Check if title is provided
+    if (data.hasOwnProperty("title")) {
+      if (!data.title.trim()) {
+        errors.title = "Title is required";
+      }
+    }
+
     // Check if user name is provided
     if (data.hasOwnProperty("name")) {
       if (!data.name.trim()) {

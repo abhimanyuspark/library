@@ -1,9 +1,10 @@
 import React from 'react'
+import SaveMyBooks from '../__comp/SaveMyBooks'
 
 const MyBooks = () => {
   return (
-    <div>
-      MyBooks
+    <div className='p-4'>
+      <SaveMyBooks />
     </div>
   )
 }

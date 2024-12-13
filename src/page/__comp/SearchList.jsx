@@ -53,12 +53,12 @@ const List = ({ books }) => {
   return (
     <div>
       <div className="">
-        <p className="text-base text-slate-400">{books.numFound} hits</p>
+        <p className="text-base text-slate-400">{books?.numFound} hits</p>
       </div>
       <div className="grid gap-1">
-        {books.docs?.map((book, index) => {
+        {books?.docs?.map((book, index) => {
           const image = book?.cover_i;
-          return <S_Card key={index} index={index} image={image} book={book} />;
+          return <S_Card key={index} image={image} book={book} />;
         })}
       </div>
     </div>

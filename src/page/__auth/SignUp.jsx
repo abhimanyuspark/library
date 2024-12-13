@@ -9,6 +9,7 @@ const SignUp = () => {
     name: "",
     email: "",
     password: "",
+    myBooks: {},
   });
   const [formError, setFormError] = useState({
     name: "",
@@ -35,7 +36,7 @@ const SignUp = () => {
       if (response?.meta?.requestStatus === "fulfilled") {
         navigate("/", { replace: true });
       } else {
-        console.log(response)
+        console.log(response);
         setFormError((p) => ({ ...p, ...response?.payload }));
       }
     } else {

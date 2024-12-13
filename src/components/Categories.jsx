@@ -103,7 +103,7 @@ const List = ({ books, onPageChange, page, totalPages, loading }) => {
         <div className="mx-2 lg:mx-4 overflow-x-auto flex items-center space-x-2 gap-8 scroll snap-mandatory snap-x scroll-smooth scroll-px-2">
           {books?.docs?.map((book, index) => {
             const image = book?.cover_i;
-            return <Card key={index} index={index} image={image} book={book} />;
+            return <Card key={index} image={image} book={book} />;
           })}
         </div>
       )}

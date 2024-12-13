@@ -14,6 +14,7 @@ const useDecBookObj = (book) => {
       const author = book?.author_name?.length > 0 ? book?.author_name : ""
       const want_to_read_count = book?.want_to_read_count
       const publish_year = book?.first_publish_year
+      const image = book?.cover_i
 
       return {
         rating,
@@ -27,7 +28,7 @@ const useDecBookObj = (book) => {
         author,
         want_to_read_count,
         publish_year,
-        
+        image
       };
     }
   }, [book]);

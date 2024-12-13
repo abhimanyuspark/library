@@ -1,8 +1,17 @@
 import { useParams, Link } from "react-router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Error, LinkButton, Loading, Ratings } from "../../components";
+import {
+  Error,
+  LinkButton,
+  Loading,
+  Ratings,
+  DialogBox,
+  SaveMyBookButton,
+} from "../../components";
 import { fetchBookDetails } from "../../redux/server/server";
+import { removeBooks } from "../../redux/fetures/books";
+import SaveMyBooks from "../__comp/SaveMyBooks";
 
 const Book = () => {
   const { id } = useParams();
@@ -11,6 +20,10 @@ const Book = () => {
 
   useEffect(() => {
     dispatch(fetchBookDetails(id));
+    return () => {
+      dispatch(removeBooks());
+      localStorage.removeItem("userbook")
+    };
   }, [dispatch, id]);
 
   return (
@@ -35,6 +48,7 @@ const Details = ({ book }) => {
   const [subPeop, setSubPeop] = useState(false);
   const [places, setPlaces] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const onSub = () => {
     setSub(!sub);
@@ -50,6 +64,10 @@ const Details = ({ book }) => {
 
   const toggleDescription = () => {
     setShowFullDescription(!showFullDescription);
+  };
+
+  const onSave = () => {
+    setOpen(true);
   };
 
   return (
@@ -80,6 +98,8 @@ const Details = ({ book }) => {
         </span>
 
         <LinkButton book={useLocalStorage} />
+
+        <SaveMyBookButton book={book} onClick={onSave} />
       </div>
 
       {/* Details Section */}
@@ -224,6 +244,8 @@ const Details = ({ book }) => {
           </div>
         </div>
       </div>
+
+      <DialogBox children={<SaveMyBooks />} open={open} setOpen={setOpen} />
     </div>
   );
 };

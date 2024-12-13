@@ -10,10 +10,14 @@ const authURL = "https://6758099f60576a194d0e735c.mockapi.io/users";
 export const fetchBooks = createAsyncThunk(
   "books",
   async ({ query, page, resultsPerPage }) => {
-    const response = await axios.get(
-      `${url}?q=${query}&limit=${resultsPerPage}&offset=${page}&ebooks=true`
-    );
-    return response.data;
+    try {
+      const response = await axios.get(
+        `${url}?q=${query}&limit=${resultsPerPage}&offset=${page}&ebooks=true`
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
@@ -22,26 +26,18 @@ export const fetchBookDetails = createAsyncThunk("bookDetails", async (id) => {
   return response.data;
 });
 
-// Combined signup for your app and Archive.org
 export const signupToBoth = createAsyncThunk(
   "auth/signupToBoth",
   async (data, { rejectWithValue }) => {
     try {
-      // Signup to your app
-      const appResponse = await axios.post(authURL, data);
-      const appUser = appResponse.data; // Assuming the API returns user data
-
-      // Signup to Archive.org
-      // const archiveResponse = await axios.post("https://archive.org/services/signup", data);
-      // const archiveUser = archiveResponse.data; // Assuming the API returns user data
+      const response = await axios.post(authURL, data);
+      const appUser = response.data; // Assuming the API returns user data
 
       if (appUser) {
-        localStorage.setItem("userToken", JSON.stringify(appUser?.email));
-        // Return both responses
-        return {
-          appUser,
-          // archiveUser
-        };
+        const obj = { id: appUser?.id, email: appUser?.email };
+        localStorage.setItem("userToken", JSON.stringify(obj));
+
+        return response.data;
       }
     } catch (error) {
       // Handle errors from either signup
@@ -50,32 +46,23 @@ export const signupToBoth = createAsyncThunk(
   }
 );
 
-// Combined signup for your app and Archive.org
 export const loginToBoth = createAsyncThunk(
   "auth/loginToBoth",
   async (data, { rejectWithValue }) => {
     const { email, password } = data;
     try {
-      // Login to your app
       const response = await axios.get(`${authURL}?email=${email}`);
-      const appUser = response.data[0]; // Assuming you expect only one user
+      const user = response.data[0]; // Assuming you expect only one user
 
-      // Signup to Archive.org
-      // const archiveResponse = await axios.post("https://archive.org/services/login", data);
-      // const archiveUser = archiveResponse.data; // Assuming the API returns user data
-
-      // Return both responses
-      if (!appUser) {
+      if (!user) {
         return rejectWithValue({ email: "User not found" });
       }
 
-      if (appUser.password === password) {
-        localStorage.setItem("userToken", JSON.stringify(appUser?.email));
-        // Return both responses
-        return {
-          appUser,
-          // archiveUser
-        };
+      if (user.password === password) {
+        const obj = { id: user?.id, email: user?.email };
+        localStorage.setItem("userToken", JSON.stringify(obj));
+
+        return response.data[0];
       } else {
         return rejectWithValue({ password: "Please enter valid credentials" });
       }
@@ -85,7 +72,72 @@ export const loginToBoth = createAsyncThunk(
   }
 );
 
-export const myBooks = createAsyncThunk("myBooks", async({id, mybook})=>{
-  const response = await axios.patch(`${url}?id=${id}`, mybook)
-  return response.data
-})
+export const addMyBooks = createAsyncThunk(
+  "addMyBooks",
+  async ({ id, mybook }) => {
+    try {
+      // Step 1: Get the existing data
+      const userResponse = await axios.get(`${authURL}/${id}`);
+      const user = userResponse.data;
+      const myBooks = [...user?.myBooks, mybook];
+
+      await axios.put(`${authURL}/${id}`, {
+        myBooks: myBooks,
+      });
+
+      return mybook;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const userDetails = createAsyncThunk("userDetails", async (id) => {
+  try {
+    const response = await axios.get(`${authURL}/${id}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+export const updateBookInMyBooks = createAsyncThunk(
+  "myBooks/updateBook",
+  async ({ id, book, action, title }) => {
+    try {
+      // Step 1: Fetch the existing data
+      const { data: existingData } = await axios.get(`${authURL}/${id}`);
+
+      // Step 2: Update the 'data' array of the specific object in 'myBooks'
+      const updatedMyBooks = existingData.myBooks.map((item) => {
+        // If the action is 'add', find the matching item and add the book
+        if (action === "add" && item.title === title) {
+          return { ...item, data: [...(item.data || []), book] };
+        }
+
+        // If the action is 'delete', find the matching item and remove the book by title
+        if (action === "delete" && item.data?.some((b) => b.title === book.title)) {
+          return {
+            ...item,
+            data: item.data.filter((b) => b.title !== book.title),
+          };
+        }
+
+        // Return the unchanged item if no conditions are met
+        return item;
+      });
+
+      // Step 3: Create the updated payload
+      const updatedData = { ...existingData, myBooks: updatedMyBooks };
+
+      // Step 4: Send the updated data back using PUT
+      const response = await axios.put(`${authURL}/${id}`, updatedData);
+
+      return response.data; // Return updated data
+    } catch (error) {
+      throw new Error(
+        error.response?.data?.message || "Failed to update myBooks"
+      );
+    }
+  }
+);

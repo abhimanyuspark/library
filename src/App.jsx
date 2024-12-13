@@ -1,11 +1,33 @@
 import { Route, Routes } from "react-router";
 import "./App.css";
 import Layout from "./layout/Layout";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { Loading, ScrollToTop } from "./components";
-import { About, Book, Contact, Dash, ForgetPassword, Login, NotFound, Search, SignUp, MyBooks } from "./page";
+import {
+  About,
+  Book,
+  Contact,
+  Dash,
+  ForgetPassword,
+  Login,
+  NotFound,
+  Search,
+  SignUp,
+  MyBooks,
+} from "./page";
+import { useDispatch, useSelector } from "react-redux";
+import { userDetails } from "./redux/server/server";
 
 function App() {
+  const { appUser } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (appUser?.id) {
+      dispatch(userDetails(appUser?.id));
+    }
+  }, []);
+
   return (
     <Suspense fallback={<Loading />}>
       <ScrollToTop />

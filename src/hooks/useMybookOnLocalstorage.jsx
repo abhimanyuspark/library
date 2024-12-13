@@ -4,7 +4,7 @@ const useMybookOnLocalstorage = (book) => {
   const onSave = useCallback(() => {
     if (book) {
       try {
-        const { rating, access, link, isbn, oclc, count, title, key } = book
+        const { rating, access, link, isbn, oclc, count, title, key, image } = book
         const obj = {
           rating,
           access,
@@ -13,7 +13,8 @@ const useMybookOnLocalstorage = (book) => {
           oclc,
           count,
           title,
-          key
+          key,
+          image
         }
 
         localStorage.setItem("userbook", JSON.stringify(obj));

@@ -13,6 +13,8 @@ import S_Card from "./S_Card";
 import Pagination from "./Pagination";
 import Categories from "./Categories";
 import Ratings from "./Ratings";
+import DialogBox from "./DialogBox";
+import SaveMyBookButton from "./styles/SaveMyBookButton";
 
 export {
   Themes,
@@ -29,5 +31,7 @@ export {
   S_Card,
   Pagination,
   Categories,
-  Ratings
+  Ratings,
+  DialogBox,
+  SaveMyBookButton
 };

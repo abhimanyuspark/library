@@ -9,6 +9,7 @@ const ThemeContext = [
 const NavContext = [
   { id: 1, name: "Home", url: "/" },
   { id: 2, name: "About", url: "/about" },
+  { id: 3, name: "My Books", url: "/mybooks" },
 ];
 
 const categoriesData = [
