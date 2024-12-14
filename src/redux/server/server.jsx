@@ -72,22 +72,38 @@ export const loginToBoth = createAsyncThunk(
   }
 );
 
-export const addMyBooks = createAsyncThunk(
-  "addMyBooks",
-  async ({ id, mybook }) => {
+export const updateMyAlbums = createAsyncThunk(
+  "updateMyAlbums",
+  async ({ id, album, action }) => {
     try {
       // Step 1: Get the existing data
       const userResponse = await axios.get(`${authURL}/${id}`);
       const user = userResponse.data;
-      const myBooks = [...user?.myBooks, mybook];
 
+      // Step 2: Determine whether to add or delete
+      let updatedAlbums;
+
+      if (action === "add") {
+        // Add the new album to the list
+        updatedAlbums = [...(user?.myBooks || []), album];
+      } else if (action === "delete") {
+        // Remove the album by a unique key (e.g., title or id)
+        updatedAlbums = user?.myBooks?.filter(
+          (existingAlbum) => existingAlbum.title !== album.title
+        );
+      } else {
+        throw new Error("Invalid action. Use 'add' or 'delete'.");
+      }
+
+      // Step 3: Update the user's data
       await axios.put(`${authURL}/${id}`, {
-        myBooks: myBooks,
+        myBooks: updatedAlbums,
       });
 
-      return mybook;
+      return updatedAlbums; // Return the updated albums
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      throw new Error(error.response?.data?.message || "Failed to update albums");
     }
   }
 );

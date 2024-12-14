@@ -22,7 +22,7 @@ const Book = () => {
     dispatch(fetchBookDetails(id));
     return () => {
       dispatch(removeBooks());
-      localStorage.removeItem("userbook")
+      localStorage.removeItem("userbook");
     };
   }, [dispatch, id]);
 
@@ -245,7 +245,15 @@ const Details = ({ book }) => {
         </div>
       </div>
 
-      <DialogBox children={<SaveMyBooks />} open={open} setOpen={setOpen} />
+      <DialogBox
+        children={
+          <SaveMyBooks
+            setClose={setOpen}
+          />
+        }
+        open={open}
+        setOpen={setOpen}
+      />
     </div>
   );
 };

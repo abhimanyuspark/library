@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addMyBooks,
+  updateMyAlbums,
   updateBookInMyBooks,
   userDetails,
 } from "../../redux/server/server";
@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router";
 import { v4 as uuidv4 } from "uuid";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
-const SaveMyBooks = () => {
+const SaveMyBooks = ({ setClose }) => {
   const { loading, error, appUser, isLogin } = useSelector(
     (state) => state.auth
   );
@@ -61,7 +61,7 @@ const SaveMyBooks = () => {
   };
 
   const onSave = async (title) => {
-    const isvalid = Object.keys(book).length > 0;
+    const isvalid = Object.keys(useLocalStorage).length > 0 && title;
 
     if (isvalid) {
       setSaving(true);
@@ -79,7 +79,24 @@ const SaveMyBooks = () => {
 
       if (res?.meta?.requestStatus === "fulfilled") {
         await dispatch(userDetails(appUser?.id));
+        setClose(false);
       }
+    }
+  };
+
+  const onDelete = async (formData) => {
+    setSaving(true);
+
+    if (formData) {
+      const response = await dispatch(
+        updateMyAlbums({ id: appUser?.id, album: formData, action: "delete" })
+      );
+      if (response?.meta?.requestStatus === "fulfilled") {
+        await dispatch(userDetails(appUser?.id));
+      }
+      setSaving(false);
+    } else {
+      setSaving(false);
     }
   };
 
@@ -111,7 +128,16 @@ const SaveMyBooks = () => {
               ))}
             </div>
 
-            <h3>{b?.title}</h3>
+            <div className="flex justify-between p-2 items-center w-full">
+              <h3>{b?.title}</h3>
+              <button
+                type="button"
+                onClick={() => onDelete(b)}
+                className="bg-red-500 py-1 px-2 text-sm rounded-md text-white hover:bg-black"
+              >
+                {saving ? "Deleting...." : "Delete"}
+              </button>
+            </div>
           </div>
         ))}
 
@@ -125,7 +151,7 @@ const SaveMyBooks = () => {
 
         {/* Add Albums */}
         <DialogBox
-          children={<AddMyBooks id={appUser?.id} />}
+          children={<AddMyBooks id={appUser?.id} setOpen={setOpen} />}
           open={open}
           setOpen={setOpen}
         />
@@ -134,7 +160,7 @@ const SaveMyBooks = () => {
   );
 };
 
-const AddMyBooks = ({ id }) => {
+const AddMyBooks = ({ id, setOpen }) => {
   const [formData, setFormData] = useState({
     id: uuidv4(),
     title: "",
@@ -158,8 +184,11 @@ const AddMyBooks = ({ id }) => {
     const isValid = Object.keys(validError).length === 0;
 
     if (isValid) {
-      const response = await dispatch(addMyBooks({ id, mybook: formData }));
+      const response = await dispatch(
+        updateMyAlbums({ id, album: formData, action: "add" })
+      );
       if (response?.meta?.requestStatus === "fulfilled") {
+        setOpen(false);
         dispatch(userDetails(id));
       } else {
         setFormError((p) => ({ ...p, ...response?.payload }));

@@ -17,6 +17,7 @@ import {
 } from "./page";
 import { useDispatch, useSelector } from "react-redux";
 import { userDetails } from "./redux/server/server";
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 function App() {
   const { appUser } = useSelector((state) => state.auth);
@@ -48,6 +49,7 @@ function App() {
           <Route path="/mybooks" element={<MyBooks />} />
         </Route>
       </Routes>
+      <SpeedInsights />
     </Suspense>
   );
 }
