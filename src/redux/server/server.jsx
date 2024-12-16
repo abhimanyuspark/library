@@ -21,12 +21,17 @@ export const fetchBooks = createAsyncThunk(
   }
 );
 
-export const fetchBookDetails = createAsyncThunk("bookDetails", async ({title, id}) => {
-  // const response = await axios.get(`${details}${id}.json?ebooks=true`);
-  // return response.data;
-  const response = await axios.get(`${url}?q=${title}&key=${id}&limit=1`);
-  return response.data?.docs?.[0];
-});
+export const fetchBookDetails = createAsyncThunk(
+  "bookDetails",
+  async ({ title, id }) => {
+    // const response = await axios.get(`${details}${id}.json?ebooks=true`);
+    // return response.data;
+    const response = await axios.get(
+      `${url}?q=${title}/${id}&limit=1`
+    );
+    return response.data?.docs?.[0];
+  }
+);
 
 export const signupToBoth = createAsyncThunk(
   "auth/signupToBoth",
@@ -69,7 +74,10 @@ export const loginToBoth = createAsyncThunk(
         return rejectWithValue({ password: "Please enter valid credentials" });
       }
     } catch (error) {
-      return rejectWithValue({ email: "Error occurred while authenticating, If you are not user pls sign up" });
+      return rejectWithValue({
+        email:
+          "Error occurred while authenticating, If you are not user pls sign up",
+      });
     }
   }
 );
@@ -105,7 +113,9 @@ export const updateMyAlbums = createAsyncThunk(
       return updatedAlbums; // Return the updated albums
     } catch (error) {
       console.error(error);
-      throw new Error(error.response?.data?.message || "Failed to update albums");
+      throw new Error(
+        error.response?.data?.message || "Failed to update albums"
+      );
     }
   }
 );
@@ -134,7 +144,10 @@ export const updateBookInMyBooks = createAsyncThunk(
         }
 
         // If the action is 'delete', find the matching item and remove the book by title
-        if (action === "delete" && item.data?.some((b) => b.title === book.title)) {
+        if (
+          action === "delete" &&
+          item.data?.some((b) => b.title === book.title)
+        ) {
           return {
             ...item,
             data: item.data.filter((b) => b.title !== book.title),
