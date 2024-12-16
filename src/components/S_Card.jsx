@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router";
 import { LinkButton, Ratings } from "../components";
-import { useDecBookObj, useMybookOnLocalstorage } from "../hooks";
+import { useDecBookObj } from "../hooks";
 
 const S_Card = ({ image, book }) => {
   const obj = useDecBookObj(book)
@@ -15,13 +15,11 @@ const S_Card = ({ image, book }) => {
     publish_year,
   } = obj
   
-  const onSave = useMybookOnLocalstorage(obj)
 
   return (
     <div className="rounded-md bg-slate-50 p-4 flex gap-6 flex-col lg:flex-row lg:items-center">
       <Link
-        to={`/book/${key}`}
-        onClick={onSave}
+        to={`/book/${key}/${title}`}
         className={`${
           image ? "p-0" : "p-2"
         } w-full lg:w-28 h-80 lg:h-40 xl:aspect-square rounded-md overflow-hidden bg-gray-200 border border-slate-200`}
@@ -40,8 +38,7 @@ const S_Card = ({ image, book }) => {
 
       <div className="flex-1 flex gap-2 flex-col">
         <Link
-          to={`/book/${key}`}
-          onClick={onSave}
+          to={`/book/${key}/${title}`}
           className="text-lg font-bold hover:text-primary cursor-pointer"
         >
           {title}

@@ -3,14 +3,12 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import Swal from "sweetalert2";
-import { useMybookOnLocalstorage } from "../../hooks";
 
 const LinkButton = ({ book, onClick }) => {
   const navigate = useNavigate();
-  const { access, link, isbn, oclc, key } = book;
+  const { access, link, isbn, oclc, key, title } = book;
   const { id } = useParams();
   const { isLogin } = useSelector((state) => state.auth);
-  const onSave = useMybookOnLocalstorage(book)
 
   const onCheck = () => {
     if (access === "public") {
@@ -72,8 +70,7 @@ const LinkButton = ({ book, onClick }) => {
           });
         }
       } else {
-        onSave()
-        navigate(`/book/${key}`);
+        navigate(`/book/${key}/${title}`);
       }
     }
   };

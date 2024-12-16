@@ -31,7 +31,7 @@ const Login = () => {
     if (isValid) {
       const response = await dispatch(loginToBoth(formData));
       if (response?.meta?.requestStatus === "fulfilled") {
-        navigate(-1, { replace: true });
+        navigate("/", { replace: true });
       } else {
         setFormError((p) => ({ ...p, ...response?.payload }));
       }

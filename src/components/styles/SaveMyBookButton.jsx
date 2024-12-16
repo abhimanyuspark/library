@@ -38,9 +38,9 @@ const SaveMyBookButton = ({ onClick, book }) => {
       onClick={check ? onUnSave : onClick}
       type="button"
       // disabled={check} // Disable if the book is already saved
-      className={`border border-slate-400 p-2 rounded-md hover:bg-black hover:text-white disabled:text-white cursor-pointer ${check ? "bg-red-500" : ""}`}
+      className={`border border-slate-400 p-2 rounded-md hover:bg-black hover:text-white disabled:text-white cursor-pointer ${check ? "bg-red-500 text-white" : ""}`}
     >
-      {check ? loading ?  "Loading..." : "Un Saved" : "Save"}
+      {check ? loading ?  "Loading..." : "Remove" : "Save"}
     </button>
   );
 };

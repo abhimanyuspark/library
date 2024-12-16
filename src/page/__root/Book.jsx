@@ -12,17 +12,17 @@ import {
 import { fetchBookDetails } from "../../redux/server/server";
 import { removeBooks } from "../../redux/fetures/books";
 import SaveMyBooks from "../__comp/SaveMyBooks";
+import { useDecBookObj } from "../../hooks";
 
 const Book = () => {
-  const { id } = useParams();
+  const { id, title } = useParams();
   const dispatch = useDispatch();
   const { book, loading, error } = useSelector((state) => state.books);
 
   useEffect(() => {
-    dispatch(fetchBookDetails(id));
+    dispatch(fetchBookDetails({ title: title, id: id }));
     return () => {
       dispatch(removeBooks());
-      localStorage.removeItem("userbook");
     };
   }, [dispatch, id]);
 
@@ -40,14 +40,12 @@ const Book = () => {
 };
 
 const Details = ({ book }) => {
-  const image = book?.covers;
-  const useLocalStorage = JSON.parse(localStorage.getItem("userbook")) || {};
-  const { rating, count } = useLocalStorage;
+  const image = book?.cover_i;
+  const obj = useDecBookObj(book);
 
   const [sub, setSub] = useState(false);
   const [subPeop, setSubPeop] = useState(false);
   const [places, setPlaces] = useState(false);
-  const [showFullDescription, setShowFullDescription] = useState(false);
   const [open, setOpen] = useState(false);
 
   const onSub = () => {
@@ -60,10 +58,6 @@ const Details = ({ book }) => {
 
   const onPlaces = () => {
     setPlaces(!places);
-  };
-
-  const toggleDescription = () => {
-    setShowFullDescription(!showFullDescription);
   };
 
   const onSave = () => {
@@ -82,7 +76,7 @@ const Details = ({ book }) => {
           {image ? (
             <img
               className="w-full h-full object-cover"
-              src={`https://covers.openlibrary.org/b/id/${image[0]}-L.jpg`}
+              src={`https://covers.openlibrary.org/b/id/${image}-L.jpg`}
               loading="lazy"
               alt={book?.title}
             />
@@ -94,12 +88,66 @@ const Details = ({ book }) => {
         </div>
 
         <span className="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded capitalize transform transition-all hover:scale-110 hover:translate-x-1 hover:translate-y-[0.05rem] cursor-pointer">
-          {book?.subjects?.[0] || "Fiction"}
+          {book?.subject?.[0] || "Fiction"}
         </span>
 
-        <LinkButton book={useLocalStorage} />
+        <LinkButton book={obj} />
 
         <SaveMyBookButton book={book} onClick={onSave} />
+
+        <div>
+          <h3>Check nearby libraries</h3>
+          <ul className="">
+            {[
+              {
+                name: "Library Thing",
+                data: `https://www.librarything.com/work/${book?.id_librarything?.[0]}`,
+              },
+              {
+                name: "Good Reads",
+                data: `https://www.goodreads.com/book/show/${book?.id_goodreads?.[0]}-${book?.title}`,
+              },
+            ].map(
+              (d, i) =>
+                d.data && (
+                  <li key={i}>
+                    <a
+                      className="text-sm text-primary hover:underline"
+                      href={d.data}
+                      target="_blank"
+                    >
+                      {d.name}
+                    </a>
+                  </li>
+                )
+            )}
+          </ul>
+        </div>
+
+        <div>
+          <h3>Buy this book</h3>
+          <ul className="">
+            {[
+              {
+                name: "Amazon",
+                data: `https://www.amazon.com/dp/${book?.id_amazon?.[1]}/?tag=internetarchi-20`,
+              },
+            ].map(
+              (d, i) =>
+                d.data && (
+                  <li key={i}>
+                    <a
+                      className="text-sm text-primary hover:underline"
+                      href={d.data}
+                      target="_blank"
+                    >
+                      {d.name}
+                    </a>
+                  </li>
+                )
+            )}
+          </ul>
+        </div>
       </div>
 
       {/* Details Section */}
@@ -110,32 +158,49 @@ const Details = ({ book }) => {
             <h1 className="text-4xl flex-none lg:flex-1 font-extrabold text-gray-900">
               {book?.title}
             </h1>
-            <div className="flex flex-col items-start lg:items-end pt-2">
-              <p>
-                <span className="font-bold">Last Modified date : </span>
-                {new Date(book?.last_modified?.value).toLocaleDateString() ||
-                  "No data available"}
-              </p>
-            </div>
           </div>
           {/* ratings */}
           <div>
-            <Ratings rating={rating} count={count} />
+            <Ratings rating={obj.rating} count={obj.count} />
           </div>
           {/* author */}
-          <p className="text-gray-700">
-            <span className="font-bold">Authors : </span>
-            {typeof book?.authors === "string"
-              ? book?.authors?.map((author) => author?.name).join(", ")
-              : book?.authors?.value || "No data available."}
-          </p>
-          {/* publish, created */}
-          <div className="flex gap-4 items-center">
+          <div className="text-gray-700 flex gap-2 items-center flex-wrap">
+            <p>
+              <span className="font-bold">Authors : </span>
+              {book?.author_name?.map((author, i) => (
+                <span key={i}>{author}</span>
+              ))}
+            </p>
+            <div className="w-1 h-1 bg-black rounded-[50%]"></div>
+            <p>
+              {book?.want_to_read_count}
+              <span> : Want to read</span>
+            </p>
+            <div className="w-1 h-1 bg-black rounded-[50%]"></div>
+            <p>
+              {book?.currently_reading_count}
+              <span> : Currently reading</span>
+            </p>
+            <div className="w-1 h-1 bg-black rounded-[50%]"></div>
+            <p>
+              {book?.already_read_count}
+              <span> : Already read</span>
+            </p>
+          </div>
+          {/* publish, publishers, pages */}
+          <div className="flex gap-4 items-center flex-wrap">
             {[
-              { d: book?.first_publish_date, name: "Publish" },
+              { d: book?.first_publish_year, name: "Publish" },
               {
-                d: new Date(book?.created?.value).toLocaleDateString(),
-                name: "Created",
+                d: book?.publisher
+                  ?.slice(0, 2)
+                  ?.map((p) => p)
+                  .join(", "),
+                name: "Publishers",
+              },
+              {
+                d: book?.number_of_pages_median,
+                name: "Pages",
               },
             ].map(
               (d, i) =>
@@ -145,31 +210,12 @@ const Details = ({ book }) => {
                     className="p-4 border border-slate-300 rounded-md flex-1 flex items-center flex-col justify-center"
                   >
                     <h4>{d.name}</h4>
-                    <p>{d?.d}</p>
+                    <p className="text-center">{d?.d}</p>
                   </div>
                 )
             )}
           </div>
-          {/* description */}
-          <p className="text-gray-600 leading-relaxed">
-            <span className="font-bold">Description : </span>
-            {typeof book?.description === "string" ? (
-              <>
-                {showFullDescription
-                  ? book.description.split("\r\n").join(" ")
-                  : book.description.split("\r\n").slice(0, 2).join(" ")}
-                <span
-                  className="text-blue-500 cursor-pointer"
-                  onClick={toggleDescription}
-                >
-                  {showFullDescription ? " Read Less" : " Read More"}
-                </span>
-              </>
-            ) : (
-              book?.description?.value || "No description available."
-            )}
-          </p>
-          {/* peoples */}
+          {/* person */}
           <div
             className={`${
               subPeop ? "line-clamp-none" : "line-clamp-1"
@@ -177,10 +223,9 @@ const Details = ({ book }) => {
             data-before={subPeop ? "▾ " : "▸ "}
             onClick={onSubPeop}
           >
-            <span className="font-bold">Subject Peoples : </span>
+            <span className="font-bold">Person : </span>
             <span className="text-sm italic">
-              {book?.subject_people?.map((s) => s).join(" ,") ||
-                "No data available."}
+              {book?.person?.map((s) => s).join(" ,") || "No data available."}
             </span>
           </div>
           {/* subject */}
@@ -193,7 +238,7 @@ const Details = ({ book }) => {
           >
             <span className="font-bold">Subject : </span>
             <span className="text-sm italic">
-              {book?.subjects?.map((s, i) => (
+              {book?.subject?.map((s, i) => (
                 <Link key={i} className="text-primary last:nth-2:hidden">
                   <span className="hover:underline underline-offset-4">
                     {s}
@@ -213,44 +258,26 @@ const Details = ({ book }) => {
           >
             <span className="font-bold">Places : </span>
             <span className="text-sm italic">
-              {book?.subject_places?.map((s) => s).join(" ,") ||
-                "No data available."}
+              {book?.place?.map((s) => s).join(" ,") || "No data available."}
+            </span>
+          </div>
+          {/* time */}
+          <div className={`text-gray-700`}>
+            <span className="font-bold">Time : </span>
+            <span className="text-sm italic">
+              {book?.time?.map((s) => s).join(" ,") || "No data available."}
             </span>
           </div>
           {/* excerpts */}
           <div className="text-gray-700">
             <span className="font-bold">Excerpts</span>
-            {typeof book?.excerpts === "string"
-              ? book?.excerpts?.value || "No data available."
-              : book?.excerpts?.map((e, i) => (
-                  <div key={i} className="flex gap-1 flex-col">
-                    <span>{e.excerpt}</span>
-                    <span>{e.comment}</span>
-                  </div>
-                ))}
-          </div>
-          {/* links */}
-          <div className="text-gray-700">
-            <span className="font-bold">Links</span>
-            {typeof book?.links === "string"
-              ? book?.links?.value || "No data available."
-              : book?.links?.map((l, i) => (
-                  <div key={i} className="flex gap-1 flex-col  text-primary">
-                    <a target="_blank" href={l.url}>
-                      {l.title}
-                    </a>
-                  </div>
-                ))}
+            <p>{book?.first_sentence?.[1]}</p>
           </div>
         </div>
       </div>
 
       <DialogBox
-        children={
-          <SaveMyBooks
-            setClose={setOpen}
-          />
-        }
+        children={<SaveMyBooks setClose={setOpen} />}
         open={open}
         setOpen={setOpen}
       />

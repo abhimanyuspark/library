@@ -3,7 +3,7 @@ import axios from "axios";
 
 const url = "https://openlibrary.org/search.json";
 
-const details = "https://openlibrary.org/works/";
+// const details = "https://openlibrary.org/works/";
 
 const authURL = "https://6758099f60576a194d0e735c.mockapi.io/users";
 
@@ -21,9 +21,11 @@ export const fetchBooks = createAsyncThunk(
   }
 );
 
-export const fetchBookDetails = createAsyncThunk("bookDetails", async (id) => {
-  const response = await axios.get(`${details}${id}.json?ebooks=true`);
-  return response.data;
+export const fetchBookDetails = createAsyncThunk("bookDetails", async ({title, id}) => {
+  // const response = await axios.get(`${details}${id}.json?ebooks=true`);
+  // return response.data;
+  const response = await axios.get(`${url}?q=${title}&key=${id}&limit=1`);
+  return response.data?.docs?.[0];
 });
 
 export const signupToBoth = createAsyncThunk(
@@ -67,7 +69,7 @@ export const loginToBoth = createAsyncThunk(
         return rejectWithValue({ password: "Please enter valid credentials" });
       }
     } catch (error) {
-      return rejectWithValue({ email: "Error occurred while authenticating" });
+      return rejectWithValue({ email: "Error occurred while authenticating, If you are not user pls sign up" });
     }
   }
 );

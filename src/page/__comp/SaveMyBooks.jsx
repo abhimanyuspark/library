@@ -14,7 +14,6 @@ const SaveMyBooks = ({ setClose }) => {
   const { loading, error, appUser, isLogin } = useSelector(
     (state) => state.auth
   );
-  const useLocalStorage = JSON.parse(localStorage.getItem("userbook")) || {};
   const { book } = useSelector((state) => state.books);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -26,7 +25,7 @@ const SaveMyBooks = ({ setClose }) => {
       const id = appUser.id;
       dispatch(userDetails(id));
     } else {
-      navigate("/login");
+      navigate("/login", { replace: true });
     }
   }, [isLogin, dispatch, navigate]);
 
@@ -38,30 +37,12 @@ const SaveMyBooks = ({ setClose }) => {
     return <Error />;
   }
 
-  const onLocal = (b) => {
-    if (b) {
-      try {
-        const { rating, access, link, isbn, oclc, count, title, key } = b;
-        const obj = {
-          rating,
-          access,
-          link,
-          isbn,
-          oclc,
-          count,
-          title,
-          key,
-        };
-
-        localStorage.setItem("userbook", JSON.stringify(obj));
-      } catch (error) {
-        console.error("Error saving book to local storage:", error);
-      }
-    }
-  };
-
   const onSave = async (title) => {
-    const isvalid = Object.keys(useLocalStorage).length > 0 && title;
+    const isvalid = Boolean(Object.keys(book).length > 0) && title;
+    const boo = {
+      title: book?.title,
+      key: book?.key,
+    }
 
     if (isvalid) {
       setSaving(true);
@@ -69,7 +50,7 @@ const SaveMyBooks = ({ setClose }) => {
       const obj = {
         id: appUser?.id,
         title: title,
-        book: useLocalStorage,
+        book: boo,
         action: "add",
       };
 
@@ -116,10 +97,7 @@ const SaveMyBooks = ({ setClose }) => {
             <div className="w-full h-full grid grid-cols-2 grid-rows-2 gap-1 border border-dashed border-slate-400 rounded-md cursor-pointer p-2">
               {b?.data?.slice(0, 4)?.map((d, i) => (
                 <Link
-                  to={`/book/${d?.key}`}
-                  onClick={() => {
-                    onLocal(d);
-                  }}
+                  to={`/book/${d?.key?.split("/works/")[1]}/${d?.title}`}
                   className="bg-slate-200 truncate text-sm p-2 place-content-center"
                   key={i}
                 >
