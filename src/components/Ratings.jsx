@@ -2,7 +2,7 @@ import { StarIcon as StarSolid } from "@heroicons/react/20/solid";
 import React from "react";
 import { StarIcon as StarOutline } from "@heroicons/react/24/outline";
 
-const Ratings = ({ rating, count }) => {
+const Ratings = ({ rating = 0, count }) => {
   return (
     <div className="flex items-center">
       {[1, 2, 3, 4, 5].map((star) => (

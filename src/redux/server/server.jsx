@@ -12,7 +12,7 @@ export const fetchBooks = createAsyncThunk(
   async ({ query, page, resultsPerPage }) => {
     try {
       const response = await axios.get(
-        `${url}?q=${query}&limit=${resultsPerPage}&offset=${page}&ebooks=true`
+        `${url}?q=${query}&limit=${resultsPerPage}&offset=${page}&ebooks=true&lang=en`
       );
       return response.data;
     } catch (error) {
@@ -24,10 +24,8 @@ export const fetchBooks = createAsyncThunk(
 export const fetchBookDetails = createAsyncThunk(
   "bookDetails",
   async ({ title, id }) => {
-    // const response = await axios.get(`${details}${id}.json?ebooks=true`);
-    // return response.data;
     const response = await axios.get(
-      `${url}?q=${title}/${id}&limit=1`
+      `${url}?q=${title}/${id}&limit=1&ebooks=true&lang=en`
     );
     return response.data?.docs?.[0];
   }

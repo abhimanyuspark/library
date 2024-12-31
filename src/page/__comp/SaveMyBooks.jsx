@@ -19,6 +19,8 @@ const SaveMyBooks = ({ setClose }) => {
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openAlbum, setOpenAlbum] = useState(false);
+  const [currentAlbum, setCurrentAlbum] = useState(null);
 
   useEffect(() => {
     if (isLogin) {
@@ -37,19 +39,22 @@ const SaveMyBooks = ({ setClose }) => {
     return <Error />;
   }
 
-  const onSave = async (title) => {
-    const isvalid = Boolean(Object.keys(book).length > 0) && title;
+  const onSave = async (album) => {
+    const isvalid = Boolean(Object.keys(book).length > 0) && album.title;
     const boo = {
       title: book?.title,
+      image:
+        book?.cover_i &&
+        `https://covers.openlibrary.org/b/id/${book?.cover_i}-L.jpg`,
       key: book?.key,
-    }
+    };
 
     if (isvalid) {
       setSaving(true);
 
       const obj = {
         id: appUser?.id,
-        title: title,
+        title: album?.title,
         book: boo,
         action: "add",
       };
@@ -62,6 +67,9 @@ const SaveMyBooks = ({ setClose }) => {
         await dispatch(userDetails(appUser?.id));
         setClose(false);
       }
+    } else {
+      setOpenAlbum(true);
+      setCurrentAlbum(album);
     }
   };
 
@@ -88,21 +96,26 @@ const SaveMyBooks = ({ setClose }) => {
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
         {/* user albums data */}
         {appUser?.myBooks?.map((b, index) => (
-          <div
-            key={index}
-            className="grid place-items-center"
-            onClick={() => onSave(b?.title)}
-          >
+          <div key={index} className="grid place-items-center">
             {/* mybooks data */}
-            <div className="w-full h-full grid grid-cols-2 grid-rows-2 gap-1 border border-dashed border-slate-400 rounded-md cursor-pointer p-2">
-              {b?.data?.slice(0, 4)?.map((d, i) => (
-                <Link
-                  to={`/book/${d?.key?.split("/works/")[1]}/${d?.title}`}
-                  className="bg-slate-200 truncate text-sm p-2 place-content-center"
-                  key={i}
-                >
-                  {d?.title}
-                </Link>
+            <div
+              className="w-full h-20 sm:h-24 border border-dashed border-slate-400 rounded-md cursor-pointer p-2"
+              onClick={() => onSave(b)}
+            >
+              {b?.data?.slice(0, 1)?.map((d, i) => (
+                <div className="w-full h-full" key={i}>
+                  {d?.image ? (
+                    <img
+                      src={d?.image}
+                      alt={d?.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-slate-200 text-center">
+                      {d?.title}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
 
@@ -120,25 +133,38 @@ const SaveMyBooks = ({ setClose }) => {
         ))}
 
         {/* create icon */}
-        <div className="grid place-items-center" onClick={() => setOpen(!open)}>
-          <div className="w-full h-full p-7 border border-dashed border-slate-400 grid place-items-center rounded-md hover:bg-slate-200 cursor-pointer">
+        <div className="grid place-items-center">
+          <div
+            className="w-full h-20 sm:h-24 p-4 border border-dashed border-slate-400 grid place-items-center rounded-md hover:bg-slate-200 hover:text-gray-700 cursor-pointer"
+            onClick={() => setOpen(!open)}
+          >
             <PlusCircleIcon className="size-9" />
           </div>
-          <h3>Create a new album here</h3>
+          <div className="p-2 w-full flex items-center justify-center">
+            <h3>Create a new album</h3>
+          </div>
         </div>
 
         {/* Add Albums */}
         <DialogBox
-          children={<AddMyBooks id={appUser?.id} setOpen={setOpen} />}
+          label={"Add Album"}
+          children={<AddMyAlbums id={appUser?.id} setOpen={setOpen} />}
           open={open}
           setOpen={setOpen}
+        />
+
+        <DialogBox
+          label={currentAlbum?.title}
+          children={<Album album={currentAlbum} />}
+          open={openAlbum}
+          setOpen={setOpenAlbum}
         />
       </div>
     </div>
   );
 };
 
-const AddMyBooks = ({ id, setOpen }) => {
+const AddMyAlbums = ({ id, setOpen }) => {
   const [formData, setFormData] = useState({
     id: uuidv4(),
     title: "",
@@ -188,6 +214,32 @@ const AddMyBooks = ({ id, setOpen }) => {
       />
       <Button children="Add" loading={loading} />
     </form>
+  );
+};
+
+const Album = ({ album }) => {
+  return (
+    <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
+      {album?.data?.map((d, i) => (
+        <Link
+          to={`/book/${d?.key?.split("/works/")[1]}/${d?.title}`}
+          className="w-full h-20 sm:h-24 rounded-lg overflow-hidden"
+          key={i}
+        >
+          {d?.image ? (
+            <img
+              src={d?.image}
+              alt={d?.title}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-slate-200 text-center">
+              {d?.title}
+            </div>
+          )}
+        </Link>
+      ))}
+    </div>
   );
 };
 

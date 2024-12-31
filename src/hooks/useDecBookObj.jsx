@@ -7,7 +7,7 @@ const useDecBookObj = (book) => {
       const link = book?.lending_identifier_s;
       const isbn = book?.isbn?.[0] || book?.bn || book?.isbn;
       const oclc = book?.oclc?.[0] || book?.oclc;
-      const rating = Math.ceil(book?.ratings_average);
+      const rating = Math.ceil(book?.ratings_average || 0);
       const count = book[`ratings_count_${rating}`];
       const key = book?.key?.split("/works/")?.[1]
       const title = book?.title

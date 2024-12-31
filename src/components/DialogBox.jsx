@@ -1,7 +1,7 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-const DialogBox = ({ open, setOpen, children }) => {
+const DialogBox = ({ open, setOpen, children, label }) => {
   return (
     <Dialog open={open} onClose={setOpen} className="relative z-10">
       <DialogBackdrop
@@ -17,7 +17,7 @@ const DialogBox = ({ open, setOpen, children }) => {
           >
             <div className="flex w-full flex-col gap-4 rounded-md overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
               <div className="flex justify-between items-center w-full">
-                <h3>Save Books</h3>
+                <h3>{label || "Label"}</h3>
                 <button type="button" onClick={() => setOpen(false)}>
                   <span className="sr-only">Close</span>
                   <XMarkIcon aria-hidden="true" className="size-6" />
