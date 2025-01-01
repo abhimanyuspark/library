@@ -147,8 +147,8 @@ const Nav = () => {
                     key={index}
                     className={({ isActive }) =>
                       isActive
-                        ? "text-primary -mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold hover:bg-gray-100"
-                        : "text-gray-900 -mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold hover:bg-gray-100"
+                        ? "text-primary -mx-3 block rounded-lg pl-16 py-2 text-base/7 font-semibold hover:bg-gray-100"
+                        : "text-gray-900 -mx-3 block rounded-lg pl-16 py-2 text-base/7 font-semibold hover:bg-gray-100"
                     }
                     to={nav?.url}
                   >
@@ -159,7 +159,7 @@ const Nav = () => {
 
               {/* login page link */}
               <div className="py-6">
-                <div className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-100">
+                <div className="-mx-3 block rounded-lg pl-16 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-100">
                   <Auth />
                 </div>
               </div>

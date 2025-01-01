@@ -15,6 +15,8 @@ import Categories from "./Categories";
 import Ratings from "./Ratings";
 import DialogBox from "./DialogBox";
 import SaveMyBookButton from "./styles/SaveMyBookButton";
+import ToastMsg_SaveBook from "./ToastMsg_SaveBook";
+import CheckNetwork from "./CheckNetwork"
 
 export {
   Themes,
@@ -33,5 +35,7 @@ export {
   Categories,
   Ratings,
   DialogBox,
-  SaveMyBookButton
+  SaveMyBookButton,
+  ToastMsg_SaveBook,
+  CheckNetwork
 };

@@ -3,32 +3,14 @@ import Error from "./Error";
 import Card from "./Card";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import axios from "axios";
+import { useResizeWindow } from "../hooks";
 
 const Categories = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [categories, setCategories] = useState({});
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage());
-
-  // Function to determine items per page based on screen width
-  function getItemsPerPage() {
-    if (window.innerWidth <= 480) {
-      return 1; // Mobile
-    } else if (window.innerWidth <= 768) {
-      return 2; // Tablet (e.g., iPad)
-    } else {
-      return 5; // Desktop
-    }
-  }
-
-  // Update `itemsPerPage` on window resize
-  useEffect(() => {
-    const handleResize = () => setItemsPerPage(getItemsPerPage());
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const itemsPerPage = useResizeWindow();
 
   const resultsPerPage = itemsPerPage;
   const totalPages = Math.ceil(categories.numFound / resultsPerPage);

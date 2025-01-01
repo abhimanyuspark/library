@@ -17,7 +17,8 @@ import {
 } from "./page";
 import { useDispatch, useSelector } from "react-redux";
 import { userDetails } from "./redux/server/server";
-import { SpeedInsights } from '@vercel/speed-insights/react';
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const { appUser } = useSelector((state) => state.auth);
@@ -49,6 +50,18 @@ function App() {
           <Route path="/mybooks" element={<MyBooks />} />
         </Route>
       </Routes>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop
+        closeOnClick
+        closeButton={false}
+        rtl={false}
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <SpeedInsights />
     </Suspense>
   );

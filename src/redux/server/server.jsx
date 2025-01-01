@@ -104,11 +104,11 @@ export const updateMyAlbums = createAsyncThunk(
       }
 
       // Step 3: Update the user's data
-      await axios.put(`${authURL}/${id}`, {
+      const res = await axios.put(`${authURL}/${id}`, {
         myBooks: updatedAlbums,
       });
 
-      return updatedAlbums; // Return the updated albums
+      return res.data; // Return the updated albums
     } catch (error) {
       console.error(error);
       throw new Error(

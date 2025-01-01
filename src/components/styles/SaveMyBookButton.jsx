@@ -3,9 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateBookInMyBooks } from "../../redux/server/server";
 
 const SaveMyBookButton = ({ onClick, book }) => {
-  const { appUser } = useSelector((state) => state.auth);
+  const { appUser, loading } = useSelector((state) => state.auth);
   const [check, setCheck] = useState(false);
-  const [loading, setLoading] = useState(false)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -21,7 +20,6 @@ const SaveMyBookButton = ({ onClick, book }) => {
   const onUnSave = async () => {
     // Remove the book from myBooks
     if (book && appUser) {
-      setLoading(true)
       const obj = {
         action: "delete",
         book: book,
@@ -29,7 +27,6 @@ const SaveMyBookButton = ({ onClick, book }) => {
       };
       await dispatch(updateBookInMyBooks(obj));
       setCheck(false);
-      setLoading(false)
     }
   };
 
@@ -38,9 +35,11 @@ const SaveMyBookButton = ({ onClick, book }) => {
       onClick={check ? onUnSave : onClick}
       type="button"
       // disabled={check} // Disable if the book is already saved
-      className={`border border-slate-400 p-2 rounded-md hover:bg-black hover:text-white disabled:text-white cursor-pointer ${check ? "bg-red-500 text-white" : ""}`}
+      className={`border border-slate-400 p-2 rounded-md hover:bg-black hover:text-white disabled:text-white cursor-pointer ${
+        check ? "bg-red-500 text-white" : ""
+      }`}
     >
-      {check ? loading ?  "Loading..." : "Remove" : "Save"}
+      {check ? (loading ? "Unsaving..." : "Unsaved") : "Save"}
     </button>
   );
 };

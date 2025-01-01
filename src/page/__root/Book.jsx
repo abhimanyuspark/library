@@ -289,7 +289,7 @@ const Details = ({ book }) => {
           {/* excerpts */}
           <div className="text-gray-700">
             <span className="font-bold">Excerpts</span>
-            <p>{book?.first_sentence?.[0]}</p>
+            <p>{book?.first_sentence?.[0] || "No excerpts found"}</p>
           </div>
         </div>
       </div>

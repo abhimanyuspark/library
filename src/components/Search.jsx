@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid"; // Heroicons library
 import { useNavigate, useParams } from "react-router";
 
@@ -7,7 +7,6 @@ const Search = ({ onChange = ()=> {} }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [page] = useState(1);
   const navigate = useNavigate();
-  const inputRef = useRef();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -24,7 +23,6 @@ const Search = ({ onChange = ()=> {} }) => {
     else{
       setSearchTerm("");
     }
-    inputRef.current.focus();
   }, [q]);
 
   return (
@@ -36,7 +34,6 @@ const Search = ({ onChange = ()=> {} }) => {
         {/* Search Input */}
         <input
           name="search"
-          ref={inputRef}
           type="text"
           value={searchTerm}
           onChange={(e) => {

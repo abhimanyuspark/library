@@ -5,10 +5,19 @@ import {
   updateBookInMyBooks,
   userDetails,
 } from "../../redux/server/server";
-import { Button, Error, Input, validation, DialogBox } from "../../components";
+import {
+  Button,
+  Error,
+  Input,
+  validation,
+  DialogBox,
+  ToastMsg_SaveBook,
+} from "../../components";
 import { Link, useNavigate } from "react-router";
 import { v4 as uuidv4 } from "uuid";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { toast } from "react-toastify";
+import { TrashIcon } from "@heroicons/react/16/solid";
 
 const SaveMyBooks = ({ setClose }) => {
   const { loading, error, appUser, isLogin } = useSelector(
@@ -17,7 +26,6 @@ const SaveMyBooks = ({ setClose }) => {
   const { book } = useSelector((state) => state.books);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [saving, setSaving] = useState(false);
   const [open, setOpen] = useState(false);
   const [openAlbum, setOpenAlbum] = useState(false);
   const [currentAlbum, setCurrentAlbum] = useState(null);
@@ -31,7 +39,7 @@ const SaveMyBooks = ({ setClose }) => {
     }
   }, [isLogin, dispatch, navigate]);
 
-  if (loading || saving) {
+  if (loading) {
     return <div className="text-center p-8">Loading ....</div>;
   }
 
@@ -40,7 +48,7 @@ const SaveMyBooks = ({ setClose }) => {
   }
 
   const onSave = async (album) => {
-    const isvalid = Boolean(Object.keys(book).length > 0) && album.title;
+    const isvalid = Boolean(Object.keys(book)?.length > 0) && album.title;
     const boo = {
       title: book?.title,
       image:
@@ -50,8 +58,6 @@ const SaveMyBooks = ({ setClose }) => {
     };
 
     if (isvalid) {
-      setSaving(true);
-
       const obj = {
         id: appUser?.id,
         title: album?.title,
@@ -59,13 +65,15 @@ const SaveMyBooks = ({ setClose }) => {
         action: "add",
       };
 
+      setClose(false);
+
       const res = await dispatch(updateBookInMyBooks(obj));
 
-      setSaving(false);
-
       if (res?.meta?.requestStatus === "fulfilled") {
-        await dispatch(userDetails(appUser?.id));
-        setClose(false);
+        toast(ToastMsg_SaveBook({ data: obj }));
+
+        // setClose(false);
+
       }
     } else {
       setOpenAlbum(true);
@@ -74,18 +82,20 @@ const SaveMyBooks = ({ setClose }) => {
   };
 
   const onDelete = async (formData) => {
-    setSaving(true);
-
     if (formData) {
       const response = await dispatch(
         updateMyAlbums({ id: appUser?.id, album: formData, action: "delete" })
       );
       if (response?.meta?.requestStatus === "fulfilled") {
-        await dispatch(userDetails(appUser?.id));
+        toast.error(formData?.title + " Album deleted successfully", {
+          theme: "colored",
+          icon: (
+            <div className="w-32 aspect-square grid place-items-center bg-white rounded-full text-red-700">
+              <TrashIcon className="size-4" />
+            </div>
+          ),
+        });
       }
-      setSaving(false);
-    } else {
-      setSaving(false);
     }
   };
 
@@ -99,7 +109,7 @@ const SaveMyBooks = ({ setClose }) => {
           <div key={index} className="grid place-items-center">
             {/* mybooks data */}
             <div
-              className="w-full h-20 sm:h-24 border border-dashed border-slate-400 rounded-md cursor-pointer p-2"
+              className="relative group/item w-full h-24 sm:h-40 border border-dashed border-slate-400 rounded-md overflow-hidden cursor-pointer p-2"
               onClick={() => onSave(b)}
             >
               {b?.data?.slice(0, 1)?.map((d, i) => (
@@ -117,16 +127,17 @@ const SaveMyBooks = ({ setClose }) => {
                   )}
                 </div>
               ))}
+              <div className="absolute top-0 left-0 z-10 w-full h-full group-hover/item:bg-[rgba(0,0,0,0.4)]"></div>
             </div>
 
             <div className="flex justify-between p-2 items-center w-full">
-              <h3>{b?.title}</h3>
+              <h3>{b?.title}{" "}{b?.data?.length}</h3>
               <button
                 type="button"
                 onClick={() => onDelete(b)}
                 className="bg-red-500 py-1 px-2 text-sm rounded-md text-white hover:bg-black"
               >
-                {saving ? "Deleting...." : "Delete"}
+                Delete
               </button>
             </div>
           </div>
@@ -135,7 +146,7 @@ const SaveMyBooks = ({ setClose }) => {
         {/* create icon */}
         <div className="grid place-items-center">
           <div
-            className="w-full h-20 sm:h-24 p-4 border border-dashed border-slate-400 grid place-items-center rounded-md hover:bg-slate-200 hover:text-gray-700 cursor-pointer"
+            className="w-full h-24 sm:h-40 p-4 border border-dashed border-slate-400 grid place-items-center rounded-md hover:bg-slate-200 hover:text-gray-700 cursor-pointer"
             onClick={() => setOpen(!open)}
           >
             <PlusCircleIcon className="size-9" />
@@ -173,7 +184,7 @@ const AddMyAlbums = ({ id, setOpen }) => {
   const [formError, setFormError] = useState({
     title: "",
   });
-  const [loading, setLoading] = useState(false);
+  const { loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const handleChange = (key, value) => {
@@ -183,24 +194,28 @@ const AddMyAlbums = ({ id, setOpen }) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     const validError = validation(formData);
     const isValid = Object.keys(validError).length === 0;
 
     if (isValid) {
+
+      setOpen(false);
+
       const response = await dispatch(
         updateMyAlbums({ id, album: formData, action: "add" })
       );
+
+      // setOpen(false);
+
       if (response?.meta?.requestStatus === "fulfilled") {
-        setOpen(false);
-        dispatch(userDetails(id));
+        toast.success(formData?.title + " Album created successfully", {
+          theme: "colored",
+        });
       } else {
         setFormError((p) => ({ ...p, ...response?.payload }));
       }
-      setLoading(false);
     } else {
       setFormError((p) => ({ ...p, ...validError }));
-      setLoading(false);
     }
   };
 
@@ -223,7 +238,7 @@ const Album = ({ album }) => {
       {album?.data?.map((d, i) => (
         <Link
           to={`/book/${d?.key?.split("/works/")[1]}/${d?.title}`}
-          className="w-full h-20 sm:h-24 rounded-lg overflow-hidden"
+          className="w-full h-24 sm:h-40 rounded-lg overflow-hidden"
           key={i}
         >
           {d?.image ? (

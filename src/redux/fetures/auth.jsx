@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginToBoth, signupToBoth, userDetails } from "../server/server";
+import { loginToBoth, signupToBoth, userDetails, updateBookInMyBooks, updateMyAlbums } from "../server/server";
 
 const userFromStorage = JSON.parse(localStorage.getItem("userToken")) || {};
 const isLogin = Boolean(localStorage.getItem("userToken"));
@@ -63,6 +63,32 @@ const authSlice = createSlice({
         state.appUser = action.payload;
       })
       .addCase(userDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error;
+      })
+      // Handle update MyBooks
+      .addCase(updateBookInMyBooks.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateBookInMyBooks.fulfilled, (state, action) => {
+        state.loading = false;
+        state.appUser = action.payload;
+      })
+      .addCase(updateBookInMyBooks.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error;
+      })
+      // Handle update MyAlbums
+      .addCase(updateMyAlbums.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateMyAlbums.fulfilled, (state, action) => {
+        state.loading = false;
+        state.appUser = action.payload;
+      })
+      .addCase(updateMyAlbums.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error;
       });
