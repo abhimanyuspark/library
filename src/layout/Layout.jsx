@@ -12,8 +12,8 @@ const Layout = () => {
   return (
     <div className={`theme-${theme.theme}`}>
       <Nav />
-      <main className="bg-slate-200 p-4 w-full min-h-screen">
-        <div className="mx-auto py-4 w-full min-h-screen lg:w-[80%] bg-white flex gap-4 flex-col border border-slate-200 rounded-md">
+      <main className="bg-slate-200 p-4 w-full min-h-[calc(100vh-70px)] max-h-full">
+        <div className="mx-auto py-4 w-full h-full lg:w-[80%] bg-white flex gap-4 flex-col border border-slate-200 rounded-md">
           <Suspense fallback={<Loading />}>
             {isOnline ? <Outlet /> : <CheckNetwork />}
           </Suspense>

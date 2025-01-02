@@ -30,7 +30,7 @@ const Book = () => {
     <div className="flex items-center justify-center p-4 sm:px-6 lg:px-8">
       {loading ? (
         <Loading />
-      ) : error || !book ? (
+      ) : error || Boolean(Object.keys(book).length === 0) ? (
         <Error />
       ) : (
         <Details book={book} />

@@ -6,7 +6,7 @@ import Image from "../../assets/library.jpg"
 const Dash = () => {
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4">
         <h3 className="text-primary underline cursor-pointer pl-4">
           Welcome to my Book app
@@ -21,7 +21,7 @@ const Dash = () => {
       {categoriesData?.map((data, index) => {
         return <Categories key={index} data={data} />;
       })}
-    </>
+    </div>
   );
 };
 
