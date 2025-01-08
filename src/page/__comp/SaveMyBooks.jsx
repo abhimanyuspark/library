@@ -103,11 +103,11 @@ const SaveMyBooks = ({ setClose }) => {
         ))}
 
         {/* create icon */}
-        <div className="relative grid place-items-center border border-dashed border-slate-400 rounded-md p-2 cursor-pointer group/item">
-          <div
-            className="grid place-items-center gap-2"
-            onClick={() => setOpen(!open)}
-          >
+        <div
+          className="relative grid place-items-center border border-dashed border-slate-400 rounded-md p-2 cursor-pointer group/item"
+          onClick={() => setOpen(!open)}
+        >
+          <div className="grid place-items-center gap-2">
             <PlusCircleIcon className="size-8 sm:size-10" />
             <h3 className="text-sm sm:text-base">Create a new album</h3>
           </div>

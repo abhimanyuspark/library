@@ -5,7 +5,7 @@ const url = "https://openlibrary.org/search.json";
 
 // const details = "https://openlibrary.org/works/";
 
-const authURL = "https://6758099f60576a194d0e735c.mockapi.io/users";
+const authURL = import.meta.env.VITE_API_URL;
 
 export const fetchBooks = createAsyncThunk(
   "books",

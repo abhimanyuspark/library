@@ -9,7 +9,7 @@ const SignUp = () => {
     name: "",
     email: "",
     password: "",
-    myBooks: {},
+    myBooks: [],
   });
   const [formError, setFormError] = useState({
     name: "",
