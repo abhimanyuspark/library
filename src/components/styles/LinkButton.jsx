@@ -78,9 +78,9 @@ const LinkButton = ({ book, onClick, button_book }) => {
   return (
     <a
       onClick={onClick || onCheck}
-      className="text-white relative cursor-pointer flex w-full gap-2 items-stretch bg-primary rounded-md overflow-hidden"
+      className="text-white cursor-pointer flex w-full gap-2 items-stretch bg-primary rounded-md overflow-hidden"
     >
-      <span className="p-2 pl-4 flex items-center">
+      <span className="main-button p-2 pl-4 flex-1 flex items-center">
         {access === "public"
           ? "Read"
           : access === "borrowable"
@@ -92,7 +92,7 @@ const LinkButton = ({ book, onClick, button_book }) => {
 
       {button_book ? access === "public" || access === "borrowable" ? (
         <span
-          className="border-l-2 border-white p-2 absolute w-full bg-primary transition-all -right-[83%] top-0 hover:-right-[17%] flex items-center gap-3"
+          className="secondary-button border-l-2 border-white p-2 w-full bg-primary flex items-center gap-3"
           onClick={() => {
             window.open(
               `https://archive.org/details/${link}/page/n16/mode/2up?ref=ol&_autoReadAloud=show&view=theater`,
@@ -100,7 +100,7 @@ const LinkButton = ({ book, onClick, button_book }) => {
             );
           }}
         >
-          <MusicalNoteIcon className="size-6" /> <span>Listen</span>
+          <MusicalNoteIcon className="size-6" /> <span className="hidden">Listen</span>
         </span>
       ) : (
         ""

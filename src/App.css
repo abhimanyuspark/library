@@ -1,20 +1,39 @@
-.scroll{
-    scrollbar-width: none;
+.scroll {
+  scrollbar-width: none;
 }
 
-.clamp::before{
-    content: attr(data-before);
-    font-size: large;
+.clamp::before {
+  content: attr(data-before);
+  font-size: large;
 }
 
-.transition-width{
-    transition: width 0.3s ease-in-out;
+.transition-width {
+  transition: width 0.3s ease-in-out;
 }
 
-.image-transform{
-    transition: transform 0.5s ease-in-out;
+.image-transform {
+  transition: transform 0.5s ease-in-out;
 }
 
-.image-transform:hover{
-    transform: perspective(450px) rotateX(0) rotateY(-10deg);
+.image-transform:hover {
+  transform: perspective(450px) rotateX(0) rotateY(-10deg);
+}
+
+.secondary-button,
+.main-button {
+  transition: flex 0.4s ease;
+}
+
+.secondary-button {
+  flex: 0;
+}
+/* Hover on the secondary button */
+.secondary-button:hover {
+  flex: 4; /* Expands to take most of the space */
+}
+.secondary-button:hover span{
+    display: block;
+}
+.secondary-button:hover ~ .main-button {
+  flex: 1; /* Shrinks to balance the container */
 }

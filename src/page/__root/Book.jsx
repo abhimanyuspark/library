@@ -80,13 +80,13 @@ const Details = ({ book }) => {
 
   const onPreview = () => {
     setPreviewUrl(
-      `https://archive.org/details/${pObj.link}/page/n16/mode/2up?ref=ol&_autoReadAloud=show&view=theater`
+      `https://archive.org/details/${pObj?.link}/page/n16/mode/2up?ref=ol&_autoReadAloud=show&view=theater`
     );
     setPreviewOpen(true);
   };
 
   return (
-    <div className="w-full overflow-hidden flex flex-col gap-6 lg:flex-row">
+    <div className="w-full flex flex-col gap-6 lg:flex-row">
       {/* Image Section */}
       <div className="lg:w-[40%] flex flex-col gap-4">
         <div className="relative image-transform w-full h-96 grid place-content-center">
@@ -109,23 +109,25 @@ const Details = ({ book }) => {
             )}
           </div>
           {/* hover div */}
-          <span className="absolute top-10 left-16 sm:left-12 bg-primary text-white text-xs px-2 py-1 rounded capitalize transform transition-all hover:scale-110 hover:translate-x-1 hover:translate-y-[0.05rem] cursor-pointer">
+          <span className="absolute top-10 left-16 sm:left-64 lg:left-12 bg-primary text-white text-xs px-2 py-1 rounded capitalize transform transition-all hover:scale-110 hover:translate-x-1 hover:translate-y-[0.05rem] cursor-pointer">
             {book?.subject?.[0] || "Fiction"}
           </span>
-
-          {/* preview */}
-          {pObj?.access === "public" && (
-            <div>
-              <span
-                className="flex items-center gap-2 hover:underline text-primary underline-offset-1"
-                onClick={()=>{onPreview()}}
-              >
-                <BookOpenIcon className="size-8" />
-                <span>Preview</span>
-              </span>
-            </div>
-          )}
         </div>
+
+        {/* preview */}
+        {pObj?.access === "public" && (
+          <div className="grid place-content-center">
+            <div
+              className="flex items-end gap-2 hover:underline text-primary underline-offset-2"
+              onClick={() => {
+                onPreview();
+              }}
+            >
+              <BookOpenIcon className="size-6" />
+              <span>Preview</span>
+            </div>
+          </div>
+        )}
 
         <LinkButton book={obj} button_book />
 
@@ -344,7 +346,7 @@ const Preview = ({ url }) => {
       title="Preview book"
       src={url}
       width="100%"
-      height="500"
+      height="450"
       allowFullScreen
     ></iframe>
   );
