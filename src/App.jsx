@@ -54,12 +54,11 @@ function App() {
         position="top-right"
         autoClose={3000}
         hideProgressBar={true}
-        newestOnTop
-        closeOnClick
+        newestOnTop={true}
+        closeOnClick={true}
         closeButton={false}
-        rtl={false}
-        draggable
-        pauseOnHover
+        draggable="touch"
+        pauseOnHover={true}
         theme="light"
       />
       <SpeedInsights />

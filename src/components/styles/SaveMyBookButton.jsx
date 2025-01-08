@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateBookInMyBooks } from "../../redux/server/server";
+import { toast } from "react-toastify";
+import { TrashIcon } from "@heroicons/react/16/solid";
 
 const SaveMyBookButton = ({ onClick, book }) => {
   const { appUser, loading } = useSelector((state) => state.auth);
@@ -26,6 +28,14 @@ const SaveMyBookButton = ({ onClick, book }) => {
         id: appUser?.id,
       };
       await dispatch(updateBookInMyBooks(obj));
+      toast.error(book?.title + " book removed", {
+        theme: "colored",
+        icon: (
+          <div className="w-40 aspect-square grid place-items-center bg-white rounded-full text-red-700">
+            <TrashIcon className="size-4" />
+          </div>
+        ),
+      });
       setCheck(false);
     }
   };
@@ -39,7 +49,7 @@ const SaveMyBookButton = ({ onClick, book }) => {
         check ? "bg-red-500 text-white" : ""
       }`}
     >
-      {check ? (loading ? "Unsaving..." : "Unsaved") : "Save"}
+      {check ? (loading ? "Removing..." : "Unsaved") : "Save"}
     </button>
   );
 };

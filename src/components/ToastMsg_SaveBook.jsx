@@ -1,9 +1,10 @@
 import React from "react";
+import { Link } from "react-router";
 
 const ToastMsg_SaveBook = ({ data }) => {
 
   return (
-    <div className="flex justify-between items-center w-full">
+    <Link to={"/mybooks"} className="flex justify-between items-center w-full">
       <div className="flex gap-2 items-center ">
         <div className="w-10 aspect-square rounded-md overflow-hidden">
           {data.book.image ? (
@@ -23,7 +24,7 @@ const ToastMsg_SaveBook = ({ data }) => {
         </h4>
       </div>
       <div className="font-semibold text-sm">Saved</div>
-    </div>
+    </Link>
   );
 };
 
