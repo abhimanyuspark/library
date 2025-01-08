@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import Swal from "sweetalert2";
 
-const LinkButton = ({ book, onClick }) => {
+const LinkButton = ({ book, onClick, button_book }) => {
   const navigate = useNavigate();
   const { access, link, isbn, oclc, key, title } = book;
   const { id } = useParams();
@@ -90,9 +90,9 @@ const LinkButton = ({ book, onClick }) => {
           : "Details"}
       </span>
 
-      {access === "public" || access === "borrowable" ? (
+      {button_book ? access === "public" || access === "borrowable" ? (
         <span
-          className="border-l-2 border-white p-2 absolute w-full h-full bg-primary transition-all -right-[85px] top-0 hover:-right-7 flex items-center gap-3"
+          className="border-l-2 border-white p-2 absolute w-full bg-primary transition-all -right-[83%] top-0 hover:-right-[17%] flex items-center gap-3"
           onClick={() => {
             window.open(
               `https://archive.org/details/${link}/page/n16/mode/2up?ref=ol&_autoReadAloud=show&view=theater`,
@@ -104,7 +104,7 @@ const LinkButton = ({ book, onClick }) => {
         </span>
       ) : (
         ""
-      )}
+      ) : ""}
     </a>
   );
 };

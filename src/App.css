@@ -10,3 +10,11 @@
 .transition-width{
     transition: width 0.3s ease-in-out;
 }
+
+.image-transform{
+    transition: transform 0.5s ease-in-out;
+}
+
+.image-transform:hover{
+    transform: perspective(450px) rotateX(0) rotateY(-10deg);
+}

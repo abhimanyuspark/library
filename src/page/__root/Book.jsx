@@ -13,6 +13,7 @@ import { fetchBookDetails } from "../../redux/server/server";
 import { removeBooks } from "../../redux/fetures/books";
 import SaveMyBooks from "../__comp/SaveMyBooks";
 import { useDecBookObj } from "../../hooks";
+import { BookOpenIcon } from "@heroicons/react/24/outline";
 
 const Book = () => {
   const { id, title } = useParams();
@@ -47,6 +48,10 @@ const Details = ({ book }) => {
   const [subPeop, setSubPeop] = useState(false);
   const [places, setPlaces] = useState(false);
   const [open, setOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  const pObj = useDecBookObj(book);
 
   const NearbyLibraries = [
     {
@@ -73,34 +78,56 @@ const Details = ({ book }) => {
     type: "language",
   });
 
+  const onPreview = () => {
+    setPreviewUrl(
+      `https://archive.org/details/${pObj.link}/page/n16/mode/2up?ref=ol&_autoReadAloud=show&view=theater`
+    );
+    setPreviewOpen(true);
+  };
+
   return (
     <div className="w-full overflow-hidden flex flex-col gap-6 lg:flex-row">
       {/* Image Section */}
-      <div className="lg:w-[40%] relative flex flex-col gap-4">
-        <div
-          className={`w-full h-96 rounded-md bg-slate-300 overflow-hidden ${
-            image ? "p-0" : "p-4"
-          }`}
-        >
-          {image ? (
-            <img
-              className="w-full h-full object-cover"
-              src={`https://covers.openlibrary.org/b/id/${image}-L.jpg`}
-              loading="lazy"
-              alt={book?.title}
-            />
-          ) : (
-            <div
-              className={`border border-white rounded-md w-full h-full`}
-            ></div>
+      <div className="lg:w-[40%] flex flex-col gap-4">
+        <div className="relative image-transform w-full h-96 grid place-content-center">
+          <div
+            className={`w-full h-80 rounded-md bg-slate-300 overflow-hidden ${
+              image ? "p-0" : "p-4"
+            }`}
+          >
+            {image ? (
+              <img
+                className="w-full h-full object-cover"
+                src={`https://covers.openlibrary.org/b/id/${image}-L.jpg`}
+                loading="lazy"
+                alt={book?.title}
+              />
+            ) : (
+              <div
+                className={`border border-white rounded-md w-full h-full`}
+              ></div>
+            )}
+          </div>
+          {/* hover div */}
+          <span className="absolute top-10 left-16 sm:left-12 bg-primary text-white text-xs px-2 py-1 rounded capitalize transform transition-all hover:scale-110 hover:translate-x-1 hover:translate-y-[0.05rem] cursor-pointer">
+            {book?.subject?.[0] || "Fiction"}
+          </span>
+
+          {/* preview */}
+          {pObj?.access === "public" && (
+            <div>
+              <span
+                className="flex items-center gap-2 hover:underline text-primary underline-offset-1"
+                onClick={()=>{onPreview()}}
+              >
+                <BookOpenIcon className="size-8" />
+                <span>Preview</span>
+              </span>
+            </div>
           )}
         </div>
 
-        <span className="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded capitalize transform transition-all hover:scale-110 hover:translate-x-1 hover:translate-y-[0.05rem] cursor-pointer">
-          {book?.subject?.[0] || "Fiction"}
-        </span>
-
-        <LinkButton book={obj} />
+        <LinkButton book={obj} button_book />
 
         <SaveMyBookButton book={book} onClick={() => setOpen(true)} />
 
@@ -300,7 +327,26 @@ const Details = ({ book }) => {
         open={open}
         setOpen={setOpen}
       />
+
+      <DialogBox
+        label={"Preview Book"}
+        children={<Preview url={previewUrl} />}
+        open={previewOpen}
+        setOpen={setPreviewOpen}
+      />
     </div>
+  );
+};
+
+const Preview = ({ url }) => {
+  return (
+    <iframe
+      title="Preview book"
+      src={url}
+      width="100%"
+      height="500"
+      allowFullScreen
+    ></iframe>
   );
 };
 
